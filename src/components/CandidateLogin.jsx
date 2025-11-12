@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+ HEAD
 // src/components/CandidateLogin.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -114,7 +114,6 @@ const CandidateLogin = () => {
     );
 };
 
-=======
 // src/components/CandidateLogin.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -230,5 +229,5 @@ const CandidateLogin = () => {
     );
 };
 
->>>>>>> 8ddf9b2188da9f20c450939e3cd463717041a287
+
 export default CandidateLogin;
