@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* src/index.css */
 
 /* --- CORE TAILWIND DIRECTIVES --- */
@@ -16,4 +17,24 @@ body {
     
     /* Applies the professional light background color */
     background-color: #F8F9FA; 
+=======
+/* src/index.css */
+
+/* --- CORE TAILWIND DIRECTIVES --- */
+/* These three lines are mandatory for Tailwind to inject its styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* --- GLOBAL STYLING (Modern Look) --- */
+
+/* Applying the custom font and background color globally */
+body {
+    /* Uses the 'Inter' font defined in tailwind.config.js */
+    font-family: 'Inter', sans-serif; 
+    
+    /* Applies the professional light background color */
+    background-color: #F8F9FA; 
+>>>>>>> 8ddf9b2188da9f20c450939e3cd463717041a287
 }
