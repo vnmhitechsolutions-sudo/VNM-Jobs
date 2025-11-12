@@ -1,0 +1,19 @@
+/* src/index.css */
+
+/* --- CORE TAILWIND DIRECTIVES --- */
+/* These three lines are mandatory for Tailwind to inject its styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* --- GLOBAL STYLING (Modern Look) --- */
+
+/* Applying the custom font and background color globally */
+body {
+    /* Uses the 'Inter' font defined in tailwind.config.js */
+    font-family: 'Inter', sans-serif; 
+    
+    /* Applies the professional light background color */
+    background-color: #F8F9FA; 
+}
