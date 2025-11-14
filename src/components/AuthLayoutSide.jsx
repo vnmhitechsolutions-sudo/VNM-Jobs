@@ -42,8 +42,8 @@ const AuthLayoutSide = ({ children, title, infoType = 'candidate' }) => {
             >
                 {/* 1. Info Section (Modern Grid) */}
                 <div className={`p-8 md:p-10 ${isCandidate ? 'bg-gradient-to-br from-white to-teal-50' : 'bg-gradient-to-br from-white to-indigo-50'}`}>
-                    <h2 className={`text-2xl font-bold mb-6 ${isCandidate ? 'text-accent-teal' : 'text-primary-dark'}`}>
-                        {isCandidate ? "CANDIDATE BENEFITS" : "EMPLOYER BENEFITS"}
+                    <h2 className={`text font-sans text-2xl font-bold mb-5 mt-5 ml-1 ${isCandidate ? 'text-primary-dark' : 'text-primary-dark'}`}>
+                        {isCandidate ? "Canditate Benefits" : "Employer Benefits"}
                     </h2>
                     <div className="info-grid grid grid-cols-1 gap-6">
                         {infoData.map((data, index) => (

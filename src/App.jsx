@@ -1,6 +1,6 @@
 // src/App.jsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 // Import all the enhanced components
 import Header from './components/Header.jsx';
@@ -18,6 +18,17 @@ import EmployerLogin from './components/EmployerLogin.jsx';
 import CandidateSignup from './components/CandidateSignup.jsx';
 import EmployerSignup from './components/EmployerSignup.jsx';
 import ForgotPassword from './components/ForgotPassword.jsx';
+
+// --- NEW IMPORTS REQUIRED FOR DASHBOARD PAGES ---
+import CandidateDashboard from './components/candidate/CandidateDashboard';
+import CandidateProfile from './components/candidate/CandidateProfile';
+import CandidateEditProfile from './components/candidate/CandidateEditProfile';
+import JobFairCalendar from './components/candidate/JobFairCalendar';
+import ResetPassword from './components/candidate/ResetPassword';
+import FeedbackPage from './components/candidate/FeedbackPage';
+import AppliedJobFairList from './components/candidate/AppliedJobFairList';
+import { AppliedJobsPage, BookmarkedJobsPage, JobFairListPage, BookmarkedJobFairListPage } from './components/candidate/StatusListingLayout'; 
+// --------------------------------------------------
 
 // Static/Utility Pages
 import TermsConditions from './components/TermsConditions.jsx';
@@ -45,6 +56,20 @@ const App = () => {
         <Route path="/candidate-signup" element={<CandidateSignup />} />
         <Route path="/employer-signup" element={<EmployerSignup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        {/* --- NEW CANDIDATE DASHBOARD ROUTES --- */}
+        <Route path="/candidate/dashboard" element={<CandidateDashboard />} />
+        <Route path="/candidate/profile" element={<CandidateProfile />} />
+        <Route path="/candidate/edit-profile" element={<CandidateEditProfile />} />
+        <Route path="/candidate/job-search" element={<JobsPage />} /> {/* Links to the public JobsPage */}
+        <Route path="/candidate/applied-jobs" element={<AppliedJobsPage />} />
+        <Route path="/candidate/bookmarked-jobs" element={<BookmarkedJobsPage />} />
+        <Route path="/candidate/job-fair-list" element={<JobFairListPage />} />
+        <Route path="/candidate/job-fair-calendar" element={<JobFairCalendar />} />
+        <Route path="/candidate/applied-job-fair-list" element={<AppliedJobFairList />} />
+        <Route path="/candidate/bookmarked-job-fair" element={<BookmarkedJobFairListPage />} />
+        <Route path="/candidate/feedback" element={<FeedbackPage />} />
+        <Route path="/candidate/reset-password" element={<ResetPassword />} />
 
         {/* Static/Legal Routes */}
         <Route path="/terms-conditions" element={<TermsConditions />} />

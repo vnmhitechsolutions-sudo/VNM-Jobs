@@ -1,7 +1,9 @@
-// src/components/CandidateSignup.jsx
+// src/components/CandidateSignup.jsx (Simplified for Focus Stability)
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import AuthLayoutSide from './AuthLayoutSide';
+import AuthLayoutSide from './AuthLayoutSide'; 
+import PasswordStrengthIndicator from './PasswordStrengthIndicator'; 
 import { FiMail, FiLock, FiUser, FiEye, FiEyeOff, FiPhone } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 
@@ -23,52 +25,156 @@ const CandidateSignup = () => {
             alert("Passwords do not match. Please re-enter.");
             return;
         }
-        // Logic for form submission
         console.log("Candidate Signup Data:", form);
         alert('Candidate registration successful! (Simulated)');
     };
+    
+    // NOTE: The InputField function component is REMOVED to prevent functional nesting issues.
+    // The inputs are written directly into the form for maximum stability.
 
-    const InputField = ({ Icon, placeholder, type = 'text', name, value, onChange, isPassword = false, showPass, setShowPass }) => (
-        <div className="form-group mb-4">
-            <label htmlFor={`c-${name}`} className="block text-sm font-medium text-gray-700 mb-1">{placeholder}</label>
-            <div className="relative">
-                <Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <input
-                    type={isPassword ? (showPass ? 'text' : 'password') : type}
-                    id={`c-${name}`}
-                    name={name}
-                    value={value}
-                    onChange={onChange}
-                    required
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-accent-teal focus:border-accent-teal transition"
-                />
-                {isPassword && (
-                    <span className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-primary-dark" onClick={() => setShowPass(!showPass)}>
-                        {showPass ? <FiEyeOff /> : <FiEye />}
-                    </span>
-                )}
-            </div>
-        </div>
+    const InputIcon = ({ Icon, name }) => (
+        <Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
     );
+    
+    const InputLabel = ({ htmlFor, text }) => (
+        <label htmlFor={htmlFor} className="block text-sm font-medium text-gray-700 mb-1">{text}</label>
+    );
+
+    const InputClass = (isPassword = false) => (
+        `w-full pl-10 py-2 border border-gray-300 rounded-lg focus:ring-accent-teal focus:border-accent-teal transition ${isPassword ? 'pr-10' : 'pr-4'}`
+    );
+
 
     return (
         <AuthLayoutSide title="Sign Up as Candidate" infoType="candidate">
             <form onSubmit={handleSubmit}>
-                <InputField Icon={FiUser} placeholder="Full Name" name="name" value={form.name} onChange={handleChange} />
-                <InputField Icon={FiUser} placeholder="Father's Name" name="fatherName" value={form.fatherName} onChange={handleChange} />
-                <InputField Icon={FiMail} placeholder="E-mail" name="email" value={form.email} onChange={handleChange} type="email" />
-                <InputField Icon={FiPhone} placeholder="Mobile Number" name="mobile" value={form.mobile} onChange={handleChange} type="tel" />
                 
-                <InputField Icon={FiLock} placeholder="Password" name="password" value={form.password} onChange={handleChange} isPassword showPass={showPassword} setShowPass={setShowPassword} />
-                <InputField Icon={FiLock} placeholder="Confirm Password" name="confirmPassword" value={form.confirmPassword} onChange={handleChange} isPassword showPass={showConfirmPassword} setShowPass={setShowConfirmPassword} />
+                {/* 1. Full Name Input (Fixes typing by simplifying structure) */}
+                <div className="form-group mb-4">
+                    <InputLabel htmlFor="c-name" text="Full Name" />
+                    <div className="relative">
+                        <InputIcon Icon={FiUser} name="name" />
+                        <input
+                            key="name" // Still essential for stability
+                            type="text"
+                            id="c-name"
+                            name="name"
+                            value={form.name}
+                            onChange={handleChange}
+                            required
+                            className={InputClass()}
+                        />
+                    </div>
+                </div>
 
-                <div className="form-group checkbox-group flex items-start mb-6 text-sm">
+                {/* 2. Father's Name Input */}
+                <div className="form-group mb-4">
+                    <InputLabel htmlFor="c-fatherName" text="Father's Name" />
+                    <div className="relative">
+                        <InputIcon Icon={FiUser} name="fatherName" />
+                        <input
+                            key="fatherName" // Still essential for stability
+                            type="text"
+                            id="c-fatherName"
+                            name="fatherName"
+                            value={form.fatherName}
+                            onChange={handleChange}
+                            required
+                            className={InputClass()}
+                        />
+                    </div>
+                </div>
+                
+                {/* 3. Email Input */}
+                <div className="form-group mb-4">
+                    <InputLabel htmlFor="c-email" text="E-mail" />
+                    <div className="relative">
+                        <InputIcon Icon={FiMail} name="email" />
+                        <input
+                            key="email"
+                            type="email"
+                            id="c-email"
+                            name="email"
+                            value={form.email}
+                            onChange={handleChange}
+                            required
+                            className={InputClass()}
+                        />
+                    </div>
+                </div>
+                
+                {/* 4. Mobile Number Input */}
+                <div className="form-group mb-4">
+                    <InputLabel htmlFor="c-mobile" text="Mobile Number" />
+                    <div className="relative">
+                        <InputIcon Icon={FiPhone} name="mobile" />
+                        <input
+                            key="mobile"
+                            type="tel"
+                            id="c-mobile"
+                            name="mobile"
+                            value={form.mobile}
+                            onChange={handleChange}
+                            required
+                            className={InputClass()}
+                        />
+                    </div>
+                </div>
+
+                {/* 5. Password Input (Most Complex) */}
+                <div className="form-group mb-4">
+                    <InputLabel htmlFor="c-password" text="Password" />
+                    <div className="relative">
+                        <InputIcon Icon={FiLock} name="password" />
+                        <input
+                            key="password"
+                            type={showPassword ? 'text' : 'password'}
+                            id="c-password"
+                            name="password"
+                            value={form.password}
+                            onChange={handleChange}
+                            required
+                            className={InputClass(true)}
+                        />
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-primary-dark" onClick={() => setShowPassword(!showPassword)}>
+                            {showPassword ? <FiEyeOff /> : <FiEye />}
+                        </span>
+                    </div>
+                </div>
+                
+                {/* Strength Indicator */}
+                {form.password.length > 0 && <PasswordStrengthIndicator password={form.password} />}
+
+                {/* 6. Confirm Password Input */}
+                <div className="form-group mb-4">
+                    <InputLabel htmlFor="c-confirmPassword" text="Confirm Password" />
+                    <div className="relative">
+                        <InputIcon Icon={FiLock} name="confirmPassword" />
+                        <input
+                            key="confirmPassword"
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            id="c-confirmPassword"
+                            name="confirmPassword"
+                            value={form.confirmPassword}
+                            onChange={handleChange}
+                            required
+                            className={InputClass(true)}
+                        />
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-primary-dark" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                            {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Terms and Conditions */}
+                <div className="form-group checkbox-group flex items-start mb-6 mt-4 text-sm">
                     <input type="checkbox" id="c-terms" name="terms" checked={form.terms} onChange={handleChange} required className="form-checkbox mt-1 text-accent-teal rounded border-gray-300 focus:ring-accent-teal mr-2" />
                     <label htmlFor="c-terms" className="text-gray-600">
                         I Accept the <Link to="/terms-conditions" className="font-medium text-accent-teal hover:text-primary-dark transition">Terms & Conditions</Link>
                     </label>
                 </div>
 
+                {/* Submit Button */}
                 <motion.button
                     type="submit"
                     className="submit-btn w-full bg-primary-dark text-white font-bold py-3 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 text-lg"
