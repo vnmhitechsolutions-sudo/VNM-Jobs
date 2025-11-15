@@ -98,7 +98,7 @@ const CandidateEditProfile = () => {
                     </div>
                 </div>
 
-                {/* --- 1. Personal Details --- */}
+                {/*  1. Personal Details  */}
                 <SectionTitle title="Personal Details" Icon={FiUser} />
                 <div className="flex flex-wrap -mx-2">
                     <Input label="Name" name="name" value={profileData.name} halfWidth />
@@ -107,7 +107,7 @@ const CandidateEditProfile = () => {
                     <Input label="District" name="district" value={profileData.district} halfWidth />
                 </div>
                 
-                {/* --- 2. Education Details --- */}
+                {/*  2. Education Details  */}
                 <SectionTitle title="Education Details" Icon={FiCalendar} onAdd={() => alert("Add Education Form")} />
                 {profileData.education.map(edu => (
                     <div key={edu.id} className="p-4 border border-indigo-100 rounded-lg bg-indigo-50 flex justify-between items-center">
@@ -117,7 +117,7 @@ const CandidateEditProfile = () => {
                 ))}
 
 
-                {/* --- 3. Languages Known (Dynamic Table) --- */}
+                {/*  3. Languages Known (Dynamic Table)  */}
                 <SectionTitle title="Languages Known" Icon={FiCalendar} onAdd={addLanguage} />
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
@@ -149,7 +149,7 @@ const CandidateEditProfile = () => {
                     </table>
                 </div>
 
-                {/* --- 4. Certifications and Skills (Placeholders) --- */}
+                {/*  4. Certifications and Skills (Placeholders)  */}
                 <SectionTitle title="Certification Details" Icon={FiCalendar} onAdd={() => alert("Add Certification Form")} />
                 <SectionTitle title="Technical Skill Details" Icon={FiCalendar} onAdd={() => alert("Add Technical Skill Form")} />
 

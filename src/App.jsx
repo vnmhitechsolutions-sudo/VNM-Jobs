@@ -19,7 +19,7 @@ import CandidateSignup from './components/CandidateSignup.jsx';
 import EmployerSignup from './components/EmployerSignup.jsx';
 import ForgotPassword from './components/ForgotPassword.jsx';
 
-// --- NEW IMPORTS REQUIRED FOR DASHBOARD PAGES ---
+//  NEW IMPORTS REQUIRED FOR DASHBOARD PAGES 
 import CandidateDashboard from './components/candidate/CandidateDashboard';
 import CandidateProfile from './components/candidate/CandidateProfile';
 import CandidateEditProfile from './components/candidate/CandidateEditProfile';
@@ -28,7 +28,7 @@ import ResetPassword from './components/candidate/ResetPassword';
 import FeedbackPage from './components/candidate/FeedbackPage';
 import AppliedJobFairList from './components/candidate/AppliedJobFairList';
 import { AppliedJobsPage, BookmarkedJobsPage, JobFairListPage, BookmarkedJobFairListPage } from './components/candidate/StatusListingLayout'; 
-// --------------------------------------------------
+// --
 
 // Static/Utility Pages
 import TermsConditions from './components/TermsConditions.jsx';
@@ -57,7 +57,7 @@ const App = () => {
         <Route path="/employer-signup" element={<EmployerSignup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        {/* --- NEW CANDIDATE DASHBOARD ROUTES --- */}
+        {/*  NEW CANDIDATE DASHBOARD ROUTES  */}
         <Route path="/candidate/dashboard" element={<CandidateDashboard />} />
         <Route path="/candidate/profile" element={<CandidateProfile />} />
         <Route path="/candidate/edit-profile" element={<CandidateEditProfile />} />

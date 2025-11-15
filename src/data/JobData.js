@@ -1,7 +1,7 @@
 // src/data/jobsData.js
 
 export const jobsData = [
-    // --- IT/Software Sector (High Salary) ---
+    //  IT/Software Sector (High Salary) 
     {
         id: 101,
         title: "Senior React JS Developer",
@@ -42,7 +42,7 @@ export const jobsData = [
         posted: "1 day ago"
     },
     
-    // --- Manufacturing/Automobile Sector (Mid to High Volume) ---
+    //  Manufacturing/Automobile Sector (Mid to High Volume) 
     {
         id: 201,
         title: "Production Supervisor",
@@ -83,7 +83,7 @@ export const jobsData = [
         posted: "7 days ago"
     },
 
-    // --- Banking/Finance/Service Sector (General) ---
+    //  Banking/Finance/Service Sector (General) 
     {
         id: 301,
         title: "Relationship Manager (Bancassurance)",
@@ -124,7 +124,7 @@ export const jobsData = [
         posted: "1 day ago"
     },
 
-    // --- Entry Level/General Jobs ---
+    //  Entry Level/General Jobs 
     {
         id: 401,
         title: "Data Entry Operator",

@@ -7,7 +7,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   
-  // --- ADD THIS RESOLVE BLOCK ---
+  //  ADD THIS RESOLVE BLOCK 
   resolve: {
     alias: {
       // Creates an alias pointing 'react-icons' to the real path.
@@ -15,7 +15,7 @@ export default defineConfig({
       'react-icons': 'react-icons' 
     }
   },
-  // ------------------------------
+  // 
   
   optimizeDeps: {
     // Keep this exclusion active!

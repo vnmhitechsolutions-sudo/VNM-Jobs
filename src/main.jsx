@@ -4,10 +4,10 @@ import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
 
-// --- REDUX IMPORTS ---
+//  REDUX IMPORTS 
 import { Provider } from 'react-redux'; 
 import { store } from './redux/store'; 
-// ---------------------
+// 
 
 const container = document.getElementById('app');
 

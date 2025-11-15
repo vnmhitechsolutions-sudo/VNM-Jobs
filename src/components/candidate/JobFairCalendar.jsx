@@ -4,7 +4,7 @@ import CandidateDashboardLayout from './CandidateDashboardLayout';
 import { FiCalendar, FiMapPin, FiClock } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 
-// --- MOCK DATA BASED ON SCREENSHOT ---
+//  MOCK DATA BASED ON SCREENSHOT 
 const MOCK_FAIRS = [
     { date: '2025-11-07', id: 1, isBookmarked: true, title: 'Micro Job Fair - Theni', time: '10:00 AM', location: 'Theni Govt Auditorium' },
     { date: '2025-11-08', id: 2, isBookmarked: false, title: 'District Job Fair - Madurai', time: '9:30 AM', location: 'Madurai Collectorate' },
@@ -81,7 +81,7 @@ const JobFairCalendar = () => {
             </h2>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* --- CALENDAR VIEW (Left Side) --- */}
+                {/*  CALENDAR VIEW (Left Side)  */}
                 <div className="p-4 border border-gray-200 rounded-xl shadow-md">
                     
                     {/* Calendar Header (Month Selector) */}
@@ -138,7 +138,7 @@ const JobFairCalendar = () => {
                     </div>
                 </div>
 
-                {/* --- EVENT LIST (Right Side) --- */}
+                {/*  EVENT LIST (Right Side)  */}
                 <div className="p-4 border border-gray-200 rounded-xl shadow-md">
                     <div className="flex justify-between items-center text-primary-dark font-bold mb-4 border-b pb-2">
                         <span className="text-lg">

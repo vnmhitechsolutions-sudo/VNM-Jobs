@@ -1,12 +1,14 @@
 // src/components/CandidateLogin.jsx
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // <-- ADDED useNavigate
+import { Link, useNavigate } from 'react-router-dom'; //useNavigate
 import AuthLayoutSide from './AuthLayoutSide';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiRefreshCw } from 'react-icons/fi';
 import { motion } from 'framer-motion';
-
+import { loginSuccess } from '../redux/authSlice';
+import { useDispatch } from 'react-redux'; //useDispatch
 const CandidateLogin = () => {
-    const navigate = useNavigate(); // <-- INITIALIZE HOOK
+    const navigate = useNavigate(); //INITIALIZE DISPATCH
+    const dispatch = useDispatch();//INITIALIZE HOOK
     const [showPassword, setShowPassword] = useState(false);
     const [captcha, setCaptcha] = useState('');
     const [captchaInput, setCaptchaInput] = useState('');
@@ -32,13 +34,13 @@ const CandidateLogin = () => {
             generateCaptcha();
             setCaptchaInput('');
         } else {
-            // --- AUTHENTICATION SUCCESS LOGIC ---
+            //  AUTHENTICATION SUCCESS LOGIC 
             console.log('Candidate Login Data:', loginData);
-            
+            dispatch(loginSuccess({ name: 'Gowthaman' })); //DISPATCH SUCCESS
             // Replaced alert with navigation logic:
             alert('Login successful! Redirecting to Dashboard.'); 
             navigate('/candidate/dashboard'); // <-- REDIRECT TO DASHBOARD
-            // --- END AUTH LOGIC ---
+            //  END AUTH LOGIC 
         }
     };
 

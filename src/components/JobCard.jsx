@@ -1,35 +1,41 @@
 // src/components/JobCard.jsx
-import React, { useState, createContext, useContext } from 'react'; // Added useContext, createContext
-import { FiMapPin, FiClock, FiDollarSign, FiCalendar, FiExternalLink, FiBriefcase, FiBookmark } from 'react-icons/fi'; // Added FiBookmark
+import React from 'react';
+import { 
+    FiMapPin, FiClock, FiDollarSign, FiCalendar, FiExternalLink, 
+    FiBriefcase, FiBookmark 
+} from 'react-icons/fi';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
+// --- REDUX IMPORTS ---
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleBookmark, selectBookmarkedIds } from '../redux/bookmarkSlice';
-
-// 🚨 NOTE: In a real app, define BookmarkContext in a separate file (e.g., src/context/BookmarkContext.js)
-// --- MOCK GLOBAL CONTEXT FOR DEMONSTRATION ONLY ---
-// This assumes your App structure will provide this context globally.
-const MockBookmarkContext = createContext({ 
-    // Mock state array: Add/remove IDs here to test the function
-    bookmarkedJobIds: [101, 201], 
-    toggleBookmark: (id, type) => { 
-        console.log(`Toggling ${type} ID: ${id}`); 
-        // In a real app, this would dispatch an action to Redux/Context store
-        // alert(`Bookmark Toggled for ID ${id}. Check console for mock function call.`);
-    } 
-});
-
-
+import { toggleBookmark, selectBookmarkedIds } from '../redux/bookmarkSlice'; 
+import { selectAuth } from '../redux/authSlice'; // Import Auth Selector
+// ---------------------
 
 const JobCard = ({ job, viewMode = 'list' }) => {
-    // Access mock bookmark state and function
-    const { bookmarkedJobIds, toggleBookmark } = useContext(MockBookmarkContext);
+    const navigate = useNavigate();
     const dispatch = useDispatch();
+    
+    // REDUX STATE: Read bookmarked IDs and authentication status
     const bookmarkedIds = useSelector(selectBookmarkedIds);
-    // Check if the current job is in the list of bookmarked IDs
-    const isBookmarked = bookmarkedJobIds.includes(job.id);
+    const { isLoggedIn } = useSelector(selectAuth); // Get login status
+    
+    const isBookmarked = bookmarkedIds.includes(job.id);
 
-    // Determine layout based on viewMode (JobsPage handles the 'list'/'grid' state)
+    // --- HANDLER: Check Auth before bookmarking ---
+    const handleBookmarkClick = () => {
+        if (!isLoggedIn) {
+            // 🛑 BARRIER: Redirect to login if user tries to save while logged out
+            alert('Please log in to save jobs.'); 
+            navigate('/candidate-login'); 
+            return;
+        }
+        // If logged in, proceed with the save action
+        dispatch(toggleBookmark(job.id));
+    };
+
+    // Determine layout based on viewMode
     const cardClasses = viewMode === 'list'
         ? 'flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6'
         : 'flex flex-col space-y-4';
@@ -67,7 +73,7 @@ const JobCard = ({ job, viewMode = 'list' }) => {
             </div>
 
             <div className="flex-grow">
-                {/* Title and Company */}
+                {/* Title and Company (Link for quick access) */}
                 <Link to={`/job/${job.id}`} className="text-xl font-bold text-primary-dark hover:text-accent-teal transition cursor-pointer">
                     {job.title}
                 </Link>
@@ -98,11 +104,10 @@ const JobCard = ({ job, viewMode = 'list' }) => {
             <div className="flex flex-col space-y-2 items-start md:items-end flex-shrink-0 mt-4 md:mt-0">
                 <JobBadge type={job.type} />
                 
-              <div className="flex space-x-2 mt-3">
-                    {/* Bookmark Button (Action happens here) */}
+                <div className="flex space-x-2 mt-3">
+                    {/* Bookmark Button (Uses handler with auth check) */}
                     <motion.button
-                        // Dispatch action when clicked!
-                        onClick={() => dispatch(toggleBookmark(job.id))} 
+                        onClick={handleBookmarkClick} 
                         className="p-2 border border-gray-300 rounded-full transition duration-300 hover:border-accent-yellow"
                         whileTap={{ scale: 0.9 }}
                         aria-label="Toggle Bookmark"
@@ -116,7 +121,7 @@ const JobCard = ({ job, viewMode = 'list' }) => {
                         />
                     </motion.button>
                     
-                    {/* View Details Button */}
+                    {/* View Details Button (Publicly accessible) */}
                     <Link 
                         to={`/job/${job.id}`}
                         className="flex items-center px-4 py-2 bg-primary-dark text-white text-sm font-semibold rounded-full transition duration-300 hover:bg-accent-teal shadow-md"

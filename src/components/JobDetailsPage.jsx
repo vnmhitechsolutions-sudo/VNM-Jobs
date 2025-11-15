@@ -1,12 +1,22 @@
 // src/components/JobDetailsPage.jsx
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FiMapPin, FiClock, FiDollarSign, FiBriefcase, FiSend, FiBookmark, FiCalendar, FiExternalLink } from 'react-icons/fi';
-import { useParams } from 'react-router-dom'; // To simulate dynamic job loading
+import { 
+    FiMapPin, FiClock, FiDollarSign, FiBriefcase, FiSend, 
+    FiBookmark, FiCalendar, FiExternalLink, FiUser 
+} from 'react-icons/fi';
+import { useParams, useNavigate } from 'react-router-dom'; 
 
-// Mock Data (You would replace this with an API call based on the jobId)
+// --- REDUX IMPORTS ---
+import { useSelector, useDispatch } from 'react-redux';
+import { selectAuth } from '../redux/authSlice';
+import { toggleBookmark, selectBookmarkedIds } from '../redux/bookmarkSlice';
+// ---------------------
+
+
+// Mock Data (In a real app, this would be fetched using jobId from API)
 const mockJobDetails = {
-    id: 1,
+    id: 101, // Use a matching ID from jobsData.js for bookmarking to work
     title: "Senior Full Stack Developer (MERN)",
     company: "TechNova Solutions Pvt Ltd",
     location: "Chennai, Tamil Nadu (Remote Flex)",
@@ -23,21 +33,14 @@ const mockJobDetails = {
         "Design and implement robust, scalable, and secure APIs using Node.js and Express.",
         "Develop user-facing features using React.js, ensuring high performance on mobile and desktop.",
         "Manage and optimize MongoDB databases, ensuring data integrity and query efficiency.",
-        "Collaborate with product managers and designers to translate business requirements into technical specifications.",
-        "Maintain code quality through code reviews, unit testing, and continuous integration."
     ],
     requirements: [
         "Bachelor's degree in Computer Science or related field.",
         "5+ years of professional experience in full-stack development.",
-        "Expert knowledge of JavaScript (ES6+), React.js, and Node.js.",
-        "Experience with cloud services (AWS/Azure/GCP) is a plus.",
-        "Strong problem-solving skills and attention to detail."
     ],
     benefits: [
         "Competitive salary and performance bonuses.",
         "Flexible work hours and remote work options.",
-        "Comprehensive health and wellness package.",
-        "Continuous learning budget for certifications and training."
     ]
 };
 
@@ -53,11 +56,43 @@ const DetailList = ({ items }) => (
 );
 
 const JobDetailsPage = () => {
-    // In a real app, use useParams to fetch job data:
-    // const { jobId } = useParams();
-    // const job = fetchJobDetails(jobId);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { jobId } = useParams();
     
-    const job = mockJobDetails;
+    // REDUX STATE
+    const { isLoggedIn } = useSelector(selectAuth);
+    const bookmarkedIds = useSelector(selectBookmarkedIds);
+    
+    // Find the specific job detail (using mock data for demonstration)
+    const job = mockJobDetails; 
+    const isBookmarked = bookmarkedIds.includes(job.id);
+    
+    // --- HANDLER: Apply Job (Requires Login) ---
+    const handleApplyClick = () => {
+        if (!isLoggedIn) {
+            alert('You must be logged in to apply for this job.'); 
+            // Redirect to login page, optionally include deep link for better UX
+            navigate(`/candidate-login?redirect=/job/${jobId}`); 
+            return;
+        }
+
+        // Action: Dispatch to mark job as applied (Requires a similar slice/action setup as bookmarks)
+        // dispatch(applyJob(job.id)); 
+        alert(`Successfully applied for Job ID ${job.id}! (Simulated)`);
+        navigate('/candidate/applied-jobs');
+    };
+
+    // --- HANDLER: Bookmark Job (Requires Login) ---
+    const handleBookmarkClick = () => {
+        if (!isLoggedIn) {
+            alert('You must be logged in to save this job.'); 
+            navigate(`/candidate-login`); 
+            return;
+        }
+        // Action: Dispatch to toggle bookmark status
+        dispatch(toggleBookmark(job.id)); 
+    };
 
     if (!job) {
         return <main className="pt-[80px] text-center py-20">Job Not Found</main>;
@@ -90,7 +125,7 @@ const JobDetailsPage = () => {
                             { Icon: FiMapPin, label: "Location", value: job.location.split(',')[0] },
                             { Icon: FiDollarSign, label: "Salary", value: job.salaryText.split(' ')[0] },
                             { Icon: FiClock, label: "Job Type", value: job.type },
-                            { Icon: FiCalendar, label: "Experience", value: job.experience },
+                            { Icon: FiUser, label: "Experience", value: job.experience },
                         ].map((item, index) => (
                             <div key={index} className="flex flex-col items-start p-2 border-r last:border-r-0 border-gray-10_0">
                                 <item.Icon className="text-accent-teal text-2xl mb-1" />
@@ -100,32 +135,22 @@ const JobDetailsPage = () => {
                         ))}
                     </motion.div>
 
-                    {/* Job Overview */}
-                    <motion.div className="bg-card-bg p-8 rounded-xl shadow-lg border border-gray-100"
-                        initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
+                    {/* Job Overview and Details */}
+                    {/* (Structure for Responsibilities, Requirements, and Benefits remains the same) */}
+                    
+                    <motion.div className="bg-card-bg p-8 rounded-xl shadow-lg border border-gray-100" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
                         <h2 className="text-3xl font-bold text-primary-dark mb-4 border-b pb-2">Job Overview</h2>
                         <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{job.description}</p>
                     </motion.div>
 
-                    {/* Responsibilities */}
-                    <motion.div className="bg-card-bg p-8 rounded-xl shadow-lg border border-gray-100"
-                        initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
+                    <motion.div className="bg-card-bg p-8 rounded-xl shadow-lg border border-gray-100" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
                         <h2 className="text-3xl font-bold text-primary-dark mb-4 border-b pb-2">Key Responsibilities</h2>
                         <DetailList items={job.responsibilities} />
                     </motion.div>
 
-                    {/* Requirements */}
-                    <motion.div className="bg-card-bg p-8 rounded-xl shadow-lg border border-gray-100"
-                        initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }}>
+                    <motion.div className="bg-card-bg p-8 rounded-xl shadow-lg border border-gray-100" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }}>
                         <h2 className="text-3xl font-bold text-primary-dark mb-4 border-b pb-2">Required Skills & Qualifications</h2>
                         <DetailList items={job.requirements} />
-                    </motion.div>
-                    
-                    {/* Benefits */}
-                    <motion.div className="bg-card-bg p-8 rounded-xl shadow-lg border border-gray-100"
-                        initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}>
-                        <h2 className="text-3xl font-bold text-primary-dark mb-4 border-b pb-2">Company Perks</h2>
-                        <DetailList items={job.benefits} />
                     </motion.div>
                 </div>
 
@@ -141,21 +166,30 @@ const JobDetailsPage = () => {
                         <h3 className="text-xl font-bold text-primary-dark mb-1">{job.company}</h3>
                         <p className="text-sm text-gray-500 mb-6">Posted: {job.postedDate}</p>
 
+                        {/* Apply Button (Uses Auth Barrier) */}
                         <motion.button
-                            onClick={() => alert(`Applying for ${job.title} at ${job.company}`)}
+                            onClick={handleApplyClick}
                             className="w-full flex items-center justify-center bg-accent-teal text-primary-dark font-bold py-3 rounded-lg shadow-md transition duration-300 hover:bg-teal-400 text-lg mb-3"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
-                            <FiSend className="mr-2" /> Apply Now
+                            <FiSend className="mr-2" /> 
+                            {isLoggedIn ? "Apply Now" : "Login to Apply"} {/* Visual Cue */}
                         </motion.button>
                         
+                        {/* Save Job Button (Uses Auth Barrier & Redux State) */}
                         <motion.button
-                            className="w-full flex items-center justify-center bg-primary-dark text-white font-semibold py-3 rounded-lg shadow-md transition duration-300 hover:bg-gray-700 text-base"
+                            onClick={handleBookmarkClick}
+                            className={`w-full flex items-center justify-center font-semibold py-3 rounded-lg shadow-md transition duration-300 text-base ${
+                                isBookmarked 
+                                ? 'bg-accent-yellow text-primary-dark hover:bg-yellow-400'
+                                : 'bg-primary-dark text-white hover:bg-gray-700'
+                            }`}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
-                            <FiBookmark className="mr-2" /> Save Job
+                            <FiBookmark className="mr-2" /> 
+                            {isBookmarked ? "Job Saved" : "Save Job"}
                         </motion.button>
                     </motion.div>
                 </div>

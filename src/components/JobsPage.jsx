@@ -1,12 +1,13 @@
 // src/components/JobsPage.jsx
 
 import React, { useState, useEffect } from 'react';
-import { jobsData } from '../data/JobData'; // Import the job data
-import JobCard from './JobCard'; // Import the styled JobCard
+import { jobsData } from '../data/JobData'; 
+import { filterOptions } from '../data/FilterOptions'; 
+import JobCard from './JobCard'; 
 import { FiFilter, FiChevronDown, FiSearch, FiLayout, FiList } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 
-// Component for a collapsible filter section
+// FilterSection component remains the same (handles individual open/close/scroll)
 const FilterSection = ({ title, options, type, handleCheckboxChange, isOpen, onClick }) => {
     return (
         <div className="filter-section border-b border-gray-200 py-4">
@@ -17,25 +18,29 @@ const FilterSection = ({ title, options, type, handleCheckboxChange, isOpen, onC
                 Jobs By {title} <FiChevronDown className={`w-5 h-5 text-gray-400 transform transition ${isOpen ? 'rotate-180' : ''}`} />
             </button>
             <motion.div
-                className="filter-content mt-3 space-y-2 max-h-48 overflow-y-auto pr-2"
+                className="filter-content mt-3 space-y-2 pr-2" 
                 initial={false}
-                // Animate height to auto or 0 for smooth open/close
-                animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }} 
+                animate={{ 
+                    maxHeight: isOpen ? '240px' : '0px', 
+                    opacity: isOpen ? 1 : 0 
+                }} 
                 transition={{ duration: 0.3 }}
-                style={{ overflow: 'hidden' }}
+                style={{ overflow: 'hidden' }} 
             >
-                {options.map(option => (
-                    <label key={option.value} className="flex items-center space-x-3 text-sm text-gray-600 cursor-pointer hover:text-primary-dark transition">
-                        <input 
-                            type="checkbox" 
-                            name={type} 
-                            value={option.value} 
-                            onChange={handleCheckboxChange} 
-                            className="form-checkbox text-accent-teal rounded border-gray-300 focus:ring-accent-teal"
-                        />
-                        <span>{option.label}</span>
-                    </label>
-                ))}
+                <div className="max-h-60 overflow-y-auto pr-2">
+                    {options.map(option => (
+                        <label key={option.value} className="flex items-center space-x-3 text-sm text-gray-600 cursor-pointer hover:text-primary-dark transition">
+                            <input 
+                                type="checkbox" 
+                                name={type} 
+                                value={option.value} 
+                                onChange={handleCheckboxChange} 
+                                className="form-checkbox text-accent-teal rounded border-gray-300 focus:ring-accent-teal"
+                            />
+                            <span>{option.label}</span>
+                        </label>
+                    ))}
+                </div>
             </motion.div>
         </div>
     );
@@ -47,92 +52,63 @@ const JobsPage = () => {
     const [jobRoleSearch, setJobRoleSearch] = useState('');
     const [filteredJobs, setFilteredJobs] = useState(jobsData);
     
-    // State for UI
+    // 1. CRITICAL CHANGE: Set initial state to all false (closed)
     const [filterSectionOpen, setFilterSectionOpen] = useState({
-        location: true, sector: true, experience: true, salary: true, type: true // All open by default
+        location: false, sector: false, experience: false, salary: false, type: false
     });
-    const [viewMode, setViewMode] = useState('list'); // 'list' or 'grid'
+    const [viewMode, setViewMode] = useState('list'); 
 
-    // --- Filter Logic (Main useEffect Hook) ---
+    // Filter Logic (Omitted for brevity, no changes) 
     useEffect(() => {
         const newFilteredJobs = jobsData.filter(job => {
-            // 1. Filter by job role search input
             const matchesJobRole = job.title.toLowerCase().includes(jobRoleSearch.toLowerCase());
             if (!matchesJobRole) return false;
 
-            // 2. Filter by checkbox selections (location, sector, salary, etc.)
             for (const filterType in filters) {
-                // Check if any filter in the group is selected
                 if (filters[filterType] && filters[filterType].length > 0) {
-                    // Check if the job's value for this filterType is NOT in the selected list
                     if (!filters[filterType].includes(job[filterType])) {
-                        return false; // Exclude job if it doesn't match any selected option in this group
+                        return false; 
                     }
                 }
             }
-            return true; // Include job if it passed all checks
+            return true; 
         });
         setFilteredJobs(newFilteredJobs);
-    }, [filters, jobRoleSearch]); // Re-run whenever filters or search term change
+    }, [filters, jobRoleSearch]); 
 
     const handleCheckboxChange = (e) => {
         const { name, value, checked } = e.target;
         setFilters(prevFilters => {
             const newFilters = { ...prevFilters };
             if (checked) {
-                // Add value to the filter array
                 newFilters[name] = [...(newFilters[name] || []), value];
             } else {
-                // Remove value from the filter array
                 newFilters[name] = newFilters[name].filter(item => item !== value);
             }
             return newFilters;
         });
     };
 
+    // 2. CRITICAL CHANGE: Implement accordion logic
     const handleFilterTitleClick = (section) => {
-        setFilterSectionOpen(prev => ({
-            ...prev,
-            [section]: !prev[section]
-        }));
+        setFilterSectionOpen(prev => {
+            // Start with all sections closed (false)
+            const newState = Object.keys(prev).reduce((acc, key) => {
+                acc[key] = false;
+                return acc;
+            }, {});
+
+            // Toggle the clicked section. If it was closed, open it (true).
+            // If it was already open, the logic above closed it, effectively toggling it off.
+            if (!prev[section]) {
+                newState[section] = true;
+            }
+            
+            return newState;
+        });
     };
     
-    // --- Mock Filter Options (Matching jobData.js keys) ---
-    const mockFilters = {
-        location: [
-            { value: 'chennai', label: 'Chennai' },
-            { value: 'coimbatore', label: 'Coimbatore' },
-            { value: 'madurai', label: 'Madurai' },
-            { value: 'others', label: 'Other Districts' },
-        ],
-        sector: [
-            { value: 'it', label: 'IT / Software' },
-            { value: 'manufacturing', label: 'Manufacturing' },
-            { value: 'automotive', label: 'Automobile' },
-            { value: 'banking', label: 'Banking / Finance' },
-            { value: 'healthcare', label: 'Healthcare' },
-            { value: 'services', label: 'Services / BPO' },
-            { value: 'retail', label: 'Retail' },
-        ],
-        salary: [
-            { value: 'below-3LPA', label: '< ₹3,00,000 P.A.' },
-            { value: '3-6LPA', label: '₹3L - ₹6L P.A.' },
-            { value: '6-10LPA', label: '₹6L - ₹10L P.A.' },
-            { value: '10-20LPA', label: '₹10L - ₹20L P.A.' },
-            { value: '20+LPA', label: '₹20L+ P.A. (Senior/Expert)' },
-        ],
-        experience: [
-            { value: 'fresher', label: 'Fresher / Entry Level' },
-            { value: '1-3y', label: '1 - 3 Years' },
-            { value: '3-5y', label: '3 - 5 Years' },
-            { value: '5+y', label: '5+ Years (Senior)' },
-        ],
-        type: [
-            { value: 'regular', label: 'Full-Time / Regular' },
-            { value: 'contract', label: 'Contract / Project-based' },
-        ]
-    };
-    
+    // The rest of the component (return statement) remains the same
     return (
         <main className="pt-[80px] bg-primary-light min-h-screen">
             <div className="bg-primary-dark py-10">
@@ -146,12 +122,10 @@ const JobsPage = () => {
             
             <div className="container mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-4 gap-8">
                 
-                {/* 1. Search Filter Sidebar (Sticky, Professional) */}
                 <div className="lg:col-span-1">
                     <div className="lg:sticky lg:top-24 bg-card-bg p-6 rounded-xl shadow-classic border border-gray-100">
                         <h3 className="text-xl font-bold text-primary-dark mb-4 border-b pb-3">Refine Search</h3>
                         
-                        {/* Search Bar Top */}
                         <div className="relative mb-6">
                             <input
                                 type="text"
@@ -165,11 +139,11 @@ const JobsPage = () => {
                         </div>
 
                         {/* Filter Sections */}
-                        {Object.keys(mockFilters).map(section => (
+                        {Object.keys(filterOptions).map(section => (
                             <FilterSection
                                 key={section}
                                 title={section.charAt(0).toUpperCase() + section.slice(1)}
-                                options={mockFilters[section]}
+                                options={filterOptions[section]} 
                                 type={section}
                                 handleCheckboxChange={handleCheckboxChange}
                                 isOpen={filterSectionOpen[section]}
@@ -187,9 +161,8 @@ const JobsPage = () => {
                     </div>
                 </div>
 
-                {/* 2. Job Listings Results */}
+                {/* 2. Job Listings Results (Omitted for brevity, no changes) */}
                 <div className="lg:col-span-3">
-                    {/* Results Header and View Toggle */}
                     <div className="flex justify-between items-center mb-6 pb-3 border-b border-gray-300">
                         <p className="text-lg font-semibold text-gray-700">Displaying {filteredJobs.length} Jobs</p>
                         <div className="flex space-x-2 bg-white p-1 rounded-full shadow-inner">
@@ -210,7 +183,6 @@ const JobsPage = () => {
                         </div>
                     </div>
 
-                    {/* Job Cards Layout */}
                     <motion.div 
                         className={`job-listings ${viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 gap-6' : 'space-y-6'}`}
                         initial={{ opacity: 0 }}
@@ -237,4 +209,4 @@ const JobsPage = () => {
     );
 };
 
-export default JobsPage;
+export default JobsPage
