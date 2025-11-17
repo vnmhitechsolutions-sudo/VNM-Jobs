@@ -23,7 +23,7 @@ const TermsConditions = () => {
             <div className="bg-primary-dark py-10">
                 <div className="container mx-auto px-4">
                     <h1 className="text-4xl font-bold text-white">Terms & Conditions 📜</h1>
-                    <p className="text-gray-400 mt-1">Governing your use of the Rescue Ski Job Portal.</p>
+                    <p className="text-gray-400 mt-1">Governing your use of the VNM Job Portal.</p>
                 </div>
             </div>
 
@@ -35,7 +35,7 @@ const TermsConditions = () => {
             >
                 <motion.div className="content-section bg-card-bg p-8 md:p-10 rounded-xl shadow-classic border border-gray-100" variants={itemVariants}>
                     <p className="mb-6 text-gray-700 border-b pb-4">
-                        Welcome to Rescue <Jobs></Jobs>. By accessing or using our services, you agree to comply with and be bound by the following terms and conditions of use. Please review these terms carefully. If you do not agree to these terms, you should not use this website.
+                        Welcome to VNM Jobs <Jobs></Jobs>. By accessing or using our services, you agree to comply with and be bound by the following terms and conditions of use. Please review these terms carefully. If you do not agree to these terms, you should not use this website.
                     </p>
                     
                     <motion.h2 className="text-2xl font-bold text-primary-dark mb-3 mt-6 border-b border-accent-teal/50 pb-1" variants={itemVariants}>

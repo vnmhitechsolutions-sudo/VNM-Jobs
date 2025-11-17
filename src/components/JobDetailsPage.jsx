@@ -7,44 +7,15 @@ import {
 } from 'react-icons/fi';
 import { useParams, useNavigate } from 'react-router-dom'; 
 
-// --- REDUX IMPORTS ---
+//  REDUX & DATA IMPORTS 
 import { useSelector, useDispatch } from 'react-redux';
 import { selectAuth } from '../redux/authSlice';
-import { toggleBookmark, selectBookmarkedIds } from '../redux/bookmarkSlice';
-// ---------------------
+import { toggleBookmark, selectBookmarkedIds } from '../redux/bookmarkSlice'; 
+import { jobsData } from '../data/JobData'; // <-- CRITICAL: Import master job data
+// -
+import { applyJob } from '../redux/jobsSlice';
 
-
-// Mock Data (In a real app, this would be fetched using jobId from API)
-const mockJobDetails = {
-    id: 101, // Use a matching ID from jobsData.js for bookmarking to work
-    title: "Senior Full Stack Developer (MERN)",
-    company: "TechNova Solutions Pvt Ltd",
-    location: "Chennai, Tamil Nadu (Remote Flex)",
-    sector: "IT / Software Development",
-    salaryText: "₹12,00,000 - ₹18,00,000 P.A.",
-    type: "Full-Time",
-    experience: "5+ Years",
-    postedDate: "2 days ago",
-    companyLogo: "https://via.placeholder.com/80?text=TN",
-    description: `
-        TechNova is seeking a highly skilled and motivated Senior Full Stack Developer to join our dynamic team. You will be responsible for the development of both the front-end and back-end of our public-facing applications. This role requires strong proficiency in the MERN stack (MongoDB, Express, React, Node.js).
-        `,
-    responsibilities: [
-        "Design and implement robust, scalable, and secure APIs using Node.js and Express.",
-        "Develop user-facing features using React.js, ensuring high performance on mobile and desktop.",
-        "Manage and optimize MongoDB databases, ensuring data integrity and query efficiency.",
-    ],
-    requirements: [
-        "Bachelor's degree in Computer Science or related field.",
-        "5+ years of professional experience in full-stack development.",
-    ],
-    benefits: [
-        "Competitive salary and performance bonuses.",
-        "Flexible work hours and remote work options.",
-    ]
-};
-
-// Component for a list of items
+// Component for a list of items (unchanged)
 const DetailList = ({ items }) => (
     <ul className="list-disc list-inside space-y-2 ml-4 text-gray-700">
         {items.map((item, index) => (
@@ -58,44 +29,66 @@ const DetailList = ({ items }) => (
 const JobDetailsPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { jobId } = useParams();
+    const { jobId } = useParams(); // Get the ID from the URL (e.g., '101', '201')
     
     // REDUX STATE
     const { isLoggedIn } = useSelector(selectAuth);
     const bookmarkedIds = useSelector(selectBookmarkedIds);
     
-    // Find the specific job detail (using mock data for demonstration)
-    const job = mockJobDetails; 
-    const isBookmarked = bookmarkedIds.includes(job.id);
+    // -
+    // 💥 THE FIX: Dynamically find the job details
+    // -
+    // Convert jobId (which is a string from URL params) to a number for comparison
+    const jobIdInt = parseInt(jobId);
     
-    // --- HANDLER: Apply Job (Requires Login) ---
+    // Look up the job object in your master array
+    const job = jobsData.find(j => j.id === jobIdInt);
+    
+    // Fallback data for required fields if the job is found (details need to be constructed)
+    const jobDetails = job ? {
+        // Use real job data from jobsData.js for key details
+        id: job.id,
+        title: job.title,
+        company: job.company,
+        location: job.location,
+        sector: job.sector,
+        salaryText: job.salaryText,
+        type: job.type,
+        experience: job.experience,
+        postedDate: job.posted,
+        companyLogo: job.companyLogo,
+        // Mock detailed content (since jobsData.js is simplified)
+        description: `This is the dynamic description for ${job.title} at ${job.company}. We are looking for candidates with expertise in the ${job.sector} sector. Apply now!`,
+        responsibilities: ["Dynamic duty 1.", "Dynamic duty 2.", "Dynamic duty 3."],
+        requirements: ["Dynamic requirement 1.", "Dynamic requirement 2."],
+    } : null;
+
+    
+    const isBookmarked = jobDetails ? bookmarkedIds.includes(jobDetails.id) : false;
+
     const handleApplyClick = () => {
         if (!isLoggedIn) {
             alert('You must be logged in to apply for this job.'); 
-            // Redirect to login page, optionally include deep link for better UX
             navigate(`/candidate-login?redirect=/job/${jobId}`); 
             return;
         }
-
-        // Action: Dispatch to mark job as applied (Requires a similar slice/action setup as bookmarks)
-        // dispatch(applyJob(job.id)); 
-        alert(`Successfully applied for Job ID ${job.id}! (Simulated)`);
+        dispatch(applyJob(job.id))
+        alert(`Successfully applied for Job ID ${jobDetails.id}! (Simulated)`);
         navigate('/candidate/applied-jobs');
     };
 
-    // --- HANDLER: Bookmark Job (Requires Login) ---
     const handleBookmarkClick = () => {
         if (!isLoggedIn) {
             alert('You must be logged in to save this job.'); 
             navigate(`/candidate-login`); 
             return;
         }
-        // Action: Dispatch to toggle bookmark status
-        dispatch(toggleBookmark(job.id)); 
+
+        dispatch(toggleBookmark(jobDetails.id)); 
     };
 
-    if (!job) {
-        return <main className="pt-[80px] text-center py-20">Job Not Found</main>;
+    if (!jobDetails) {
+        return <main className="pt-[80px] text-center py-20 text-red-600 font-bold">Error: Job ID {jobId} Not Found.</main>;
     }
 
     return (
@@ -104,8 +97,8 @@ const JobDetailsPage = () => {
             {/* Header Banner */}
             <div className="bg-primary-dark py-10">
                 <div className="container mx-auto px-4">
-                    <h1 className="text-4xl font-extrabold text-white">{job.title}</h1>
-                    <p className="text-accent-teal text-xl mt-1">{job.company}</p>
+                    <h1 className="text-4xl font-extrabold text-white">{jobDetails.title}</h1>
+                    <p className="text-accent-teal text-xl mt-1">{jobDetails.company}</p>
                 </div>
             </div>
 
@@ -114,7 +107,7 @@ const JobDetailsPage = () => {
                 {/* 1. Main Job Description (3/4 width) */}
                 <div className="lg:col-span-3 space-y-8">
                     
-                    {/* Key Info Bar */}
+                    {/* Key Info Bar (Using dynamic jobDetails) */}
                     <motion.div 
                         className="bg-card-bg p-6 rounded-xl shadow-lg grid grid-cols-2 md:grid-cols-4 gap-4 border border-gray-100"
                         initial={{ y: 20, opacity: 0 }}
@@ -122,10 +115,10 @@ const JobDetailsPage = () => {
                         transition={{ delay: 0.1 }}
                     >
                         {[
-                            { Icon: FiMapPin, label: "Location", value: job.location.split(',')[0] },
-                            { Icon: FiDollarSign, label: "Salary", value: job.salaryText.split(' ')[0] },
-                            { Icon: FiClock, label: "Job Type", value: job.type },
-                            { Icon: FiUser, label: "Experience", value: job.experience },
+                            { Icon: FiMapPin, label: "Location", value: jobDetails.location.split(',')[0] },
+                            { Icon: FiDollarSign, label: "Salary", value: jobDetails.salaryText.split(' ')[0] },
+                            { Icon: FiClock, label: "Job Type", value: jobDetails.type },
+                            { Icon: FiUser, label: "Experience", value: jobDetails.experience },
                         ].map((item, index) => (
                             <div key={index} className="flex flex-col items-start p-2 border-r last:border-r-0 border-gray-10_0">
                                 <item.Icon className="text-accent-teal text-2xl mb-1" />
@@ -135,22 +128,15 @@ const JobDetailsPage = () => {
                         ))}
                     </motion.div>
 
-                    {/* Job Overview and Details */}
-                    {/* (Structure for Responsibilities, Requirements, and Benefits remains the same) */}
-                    
+                    {/* Job Overview and Details (Using dynamic jobDetails) */}
                     <motion.div className="bg-card-bg p-8 rounded-xl shadow-lg border border-gray-100" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
                         <h2 className="text-3xl font-bold text-primary-dark mb-4 border-b pb-2">Job Overview</h2>
-                        <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{job.description}</p>
+                        <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{jobDetails.description}</p>
                     </motion.div>
-
+                    
                     <motion.div className="bg-card-bg p-8 rounded-xl shadow-lg border border-gray-100" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
                         <h2 className="text-3xl font-bold text-primary-dark mb-4 border-b pb-2">Key Responsibilities</h2>
-                        <DetailList items={job.responsibilities} />
-                    </motion.div>
-
-                    <motion.div className="bg-card-bg p-8 rounded-xl shadow-lg border border-gray-100" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }}>
-                        <h2 className="text-3xl font-bold text-primary-dark mb-4 border-b pb-2">Required Skills & Qualifications</h2>
-                        <DetailList items={job.requirements} />
+                        <DetailList items={jobDetails.responsibilities} />
                     </motion.div>
                 </div>
 
@@ -162,11 +148,11 @@ const JobDetailsPage = () => {
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ type: "spring", stiffness: 150, delay: 0.1 }}
                     >
-                        <img src={job.companyLogo} alt={`${job.company} Logo`} className="w-20 h-20 mx-auto rounded-full mb-3 border-4 border-accent-yellow/50" />
-                        <h3 className="text-xl font-bold text-primary-dark mb-1">{job.company}</h3>
-                        <p className="text-sm text-gray-500 mb-6">Posted: {job.postedDate}</p>
+                        <img src={jobDetails.companyLogo} alt={`${jobDetails.company} Logo`} className="w-20 h-20 mx-auto rounded-full mb-3 border-4 border-accent-yellow/50" />
+                        <h3 className="text-xl font-bold text-primary-dark mb-1">{jobDetails.company}</h3>
+                        <p className="text-sm text-gray-500 mb-6">Posted: {jobDetails.postedDate}</p>
 
-                        {/* Apply Button (Uses Auth Barrier) */}
+                        {/* Apply Button */}
                         <motion.button
                             onClick={handleApplyClick}
                             className="w-full flex items-center justify-center bg-accent-teal text-primary-dark font-bold py-3 rounded-lg shadow-md transition duration-300 hover:bg-teal-400 text-lg mb-3"
@@ -174,10 +160,10 @@ const JobDetailsPage = () => {
                             whileTap={{ scale: 0.98 }}
                         >
                             <FiSend className="mr-2" /> 
-                            {isLoggedIn ? "Apply Now" : "Login to Apply"} {/* Visual Cue */}
+                            {isLoggedIn ? "Apply Now" : "Login to Apply"}
                         </motion.button>
                         
-                        {/* Save Job Button (Uses Auth Barrier & Redux State) */}
+                        {/* Save Job Button */}
                         <motion.button
                             onClick={handleBookmarkClick}
                             className={`w-full flex items-center justify-center font-semibold py-3 rounded-lg shadow-md transition duration-300 text-base ${

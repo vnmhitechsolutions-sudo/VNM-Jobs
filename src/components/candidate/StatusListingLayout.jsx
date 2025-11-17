@@ -7,13 +7,13 @@ import { useSelector } from 'react-redux';
 import { selectBookmarkedIds } from '../../redux/bookmarkSlice'; // Correct Redux selector
 import { jobsData } from '../../data/JobData'; // CRITICAL: Master job data source
 
-// --- Mock Data for Applied/Fair Lists (since their real data isn't in Redux yet) ---
+//  Mock Data for Applied/Fair Lists (since their real data isn't in Redux yet) 
 const MOCK_APPLIED_FAIR_DATA = [
     { id: 101, title: 'Senior React JS Developer', company: 'Innovatech Solutions', location: 'chennai', type: 'regular', salaryText: '₹12L - ₹18L P.A.', isApplied: true },
     { id: 201, title: 'Data Analyst (Entry Level)', company: 'DataSphere AI', location: 'coimbatore', type: 'contract', salaryText: '₹4L - ₹6L P.A.', isApplied: true },
     { id: 303, title: 'Digital Marketing Specialist', company: 'MarketGrowth Agency', location: 'coimbatore', type: 'regular', salaryText: '₹7L - ₹10L P.A.', isApplied: true },
 ];
-// -----------------------------------------------------------------------------------
+// --
 
 
 const StatusListingLayout = ({ title, Icon, listType }) => {
@@ -23,7 +23,7 @@ const StatusListingLayout = ({ title, Icon, listType }) => {
     let listData = [];
     let emptyMessage = `No ${title} found.`;
 
-    // --- DATA FETCHING LOGIC ---
+    //  DATA FETCHING LOGIC 
     if (listType === 'bookmarked') {
         // FIX: Filter the master job list (jobsData) to find only the bookmarked IDs
         listData = jobsData.filter(job => bookmarkedJobIds.includes(job.id));
@@ -42,7 +42,7 @@ const StatusListingLayout = ({ title, Icon, listType }) => {
         emptyMessage = listType === 'bookmarkedfair' ? 'Bookmark job fair events to see them here.' : 'No active Job Fair listings available.';
     }
     
-    // --- END DATA FETCHING LOGIC ---
+    //  END DATA FETCHING LOGIC 
 
     return (
         <CandidateDashboardLayout title={title}>
@@ -71,7 +71,7 @@ const StatusListingLayout = ({ title, Icon, listType }) => {
 };
 
 
-// --- Exporting the specific pages using the layout ---
+//  Exporting the specific pages using the layout 
 
 export const AppliedJobsPage = () => (
     <StatusListingLayout title="Applied Jobs" Icon={FiCheckSquare} listType="applied" />

@@ -85,7 +85,7 @@ const Header = () => {
                 {/* Logo (Modern Classic Typography) */}
                 <Link to="/" className="text-2xl font-extrabold flex items-center text-white">
                     <FiBriefcase className="mr-2 text-accent-yellow text-3xl" />
-                    Rescue<span className="text-accent-teal">Jobs</span>
+                    VNM<span className="text-accent-teal"> Jobs</span>
                 </Link>
 
                 {/* Desktop Navigation */}

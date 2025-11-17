@@ -19,7 +19,7 @@ const Footer = () => {
                     <div className="col-span-2 md:col-span-1 space-y-4">
                         <Link to="/" className="text-2xl font-extrabold flex items-center text-white">
                             <FiBriefcase className="mr-2 text-accent-yellow text-3xl" />
-                            Rescue<span className="text-accent-teal">Skills</span>
+                            R<span className="text-accent-teal">Skills</span>
                         </Link>
                         <p className="text-gray-400 text-sm">
                             The advanced private job portal for aspiring talent across sectors.
@@ -74,7 +74,7 @@ const Footer = () => {
 
                 {/* Copyright */}
                 <div className="text-center text-sm text-gray-500 pt-4">
-                    &copy; 2025 Rescue Jobs. All rights reserved.
+                    &copy; 2025 VNM Jobs. All rights reserved.
                 </div>
             </div>
         </footer>

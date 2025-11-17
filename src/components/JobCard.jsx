@@ -7,11 +7,11 @@ import {
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 
-// --- REDUX IMPORTS ---
+//  REDUX IMPORTS 
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleBookmark, selectBookmarkedIds } from '../redux/bookmarkSlice'; 
 import { selectAuth } from '../redux/authSlice'; // Import Auth Selector
-// ---------------------
+// 
 
 const JobCard = ({ job, viewMode = 'list' }) => {
     const navigate = useNavigate();
@@ -23,7 +23,7 @@ const JobCard = ({ job, viewMode = 'list' }) => {
     
     const isBookmarked = bookmarkedIds.includes(job.id);
 
-    // --- HANDLER: Check Auth before bookmarking ---
+    //  HANDLER: Check Auth before bookmarking 
     const handleBookmarkClick = () => {
         if (!isLoggedIn) {
             // 🛑 BARRIER: Redirect to login if user tries to save while logged out
