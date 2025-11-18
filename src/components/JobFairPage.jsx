@@ -5,8 +5,8 @@ import { motion } from 'framer-motion';
 
 // Mock Data for Job Fairs (You would replace this with an API fetch)
 const mockJobFairs = [
-    { id: 1, title: 'Mega Job Fair - 14 NOV 2025', location: 'Thiruvallur District', details: 'District Employment and Career Guidance Centre, Thiruvallur District, ...', date: '14.11.2025', time: '10:00 AM - 05:00 PM', category: 'Mega' },
-    { id: 2, title: 'Micro Job Fair - 14-11-2025', location: 'Union Club, Mylapore, Chennai', details: 'District Employment and Career Guidance Centre - Mylapore at Union Club...', date: '14.11.2025', time: '10:00 AM - 01:00 PM', category: 'Micro' },
+    { id: 1, title: 'Mega Job Fair - 14 NOV 2025', location: 'Thiruvallur District', details: 'District Employment and Career Guidance Centre, Thiruvallur District, ', date: '14.11.2025', time: '10:00 AM - 05:00 PM', category: 'Mega' },
+    { id: 2, title: 'Micro Job Fair - 14-11-2025', location: 'Union Club, Mylapore, Chennai', details: 'District Employment and Career Guidance Centre - Mylapore at Union Club', date: '14.11.2025', time: '10:00 AM - 01:00 PM', category: 'Micro' },
     { id: 3, title: 'Women Mega Job Fair - 21 NOV 2025', location: 'Tirunelveli District, Palayamkottai', details: 'Organized by District Employment Office Palayamkottai, focusing on women candidates.', date: '21.11.2025', time: '09:30 AM - 04:00 PM', category: 'Women' },
 ];
 

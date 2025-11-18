@@ -194,7 +194,7 @@ const Header = () => {
                     animate={{ opacity: 1, height: "auto" }}
                     transition={{ duration: 0.3 }}
                 >
-                    {/* ... (Mobile NavItem links) ... */}
+                    {/*  (Mobile NavItem links)  */}
                     {/* Mobile Login/Logout links need updating based on isLoggedIn as well */}
                 </motion.div>
             )}

@@ -47,7 +47,7 @@ const AuthLayoutSide = ({ children, title, infoType = 'candidate' }) => {
                     </h2>
                     <div className="info-grid grid grid-cols-1 gap-6">
                         {infoData.map((data, index) => (
-                            <InfoCard key={index} {...data} />
+                            <InfoCard key={index} {data} />
                         ))}
                     </div>
                 </div>

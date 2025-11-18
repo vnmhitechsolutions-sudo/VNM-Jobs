@@ -16,7 +16,7 @@ const CandidateSignup = () => {
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setForm(prevForm => ({ ...prevForm, [name]: type === 'checkbox' ? checked : value }));
+        setForm(prevForm => ({ prevForm, [name]: type === 'checkbox' ? checked : value }));
     };
 
     const handleSubmit = (e) => {
