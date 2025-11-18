@@ -30,7 +30,7 @@ const JobFairCalendar = () => {
 
     // Get the first day of the month (e.g., Nov 1st, 2025)
     const firstDayOfMonth = new Date(year, month, 1);
-    // Get the weekday of the first day (0=Sun, 1=Mon Sat=6). Sunday is the start of the week in US/Canada, but usually Monday in India. Let's use Monday=1.
+    // Get the weekday of the first day (0=Sun, 1=Mon... Sat=6). Sunday is the start of the week in US/Canada, but usually Monday in India. Let's use Monday=1.
     const startDayIndex = (firstDayOfMonth.getDay() + 6) % 7; // Adjusting for Monday start (0=Mon)
     // Total days in November is 30
     const totalDays = new Date(year, month + 1, 0).getDate();

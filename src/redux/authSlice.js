@@ -53,16 +53,16 @@ const authSlice = createSlice({
             };
             
             state.userName = userData.name.split(' ')[0]; // Use first name for header
-            state.profile = { initialProfileState, userData };
+            state.profile = { ...initialProfileState, ...userData };
             
             // 💥 FIX 2: Calculate percentage immediately
             state.profileCompletion = calculateCompletion(state.profile);
         },
         updateProfile: (state, action) => {
-            state.profile = { state.profile, action.payload };
+            state.profile = { ...state.profile, ...action.payload };
             state.profileCompletion = calculateCompletion(state.profile);
         },
-        //  (logout reducer remains the same)
+        // ... (logout reducer remains the same)
     },
 });
 

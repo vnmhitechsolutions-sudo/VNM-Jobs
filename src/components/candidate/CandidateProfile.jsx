@@ -101,7 +101,7 @@ const CandidateProfile = () => {
             <Section title="Languages Known" Icon={FiUser}>
                 {languages && languages.length > 0 ? (
                     <table className="min-w-full divide-y divide-gray-200">
-                        {/*  (Table head remains the same)  */}
+                        {/* ... (Table head remains the same) ... */}
                         <tbody className="bg-white divide-y divide-gray-200">
                             {languages.map(lang => (
                                 <tr key={lang.id}>

@@ -79,9 +79,9 @@ const JobsPage = () => {
     const handleCheckboxChange = (e) => {
         const { name, value, checked } = e.target;
         setFilters(prevFilters => {
-            const newFilters = { prevFilters };
+            const newFilters = { ...prevFilters };
             if (checked) {
-                newFilters[name] = [(newFilters[name] || []), value];
+                newFilters[name] = [...(newFilters[name] || []), value];
             } else {
                 newFilters[name] = newFilters[name].filter(item => item !== value);
             }

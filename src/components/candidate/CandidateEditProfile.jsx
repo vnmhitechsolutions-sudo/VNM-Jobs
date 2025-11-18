@@ -26,30 +26,30 @@ const CandidateEditProfile = () => {
     const handleFormChange = (e) => {
         const { name, value, type, checked } = e.target;
         setProfileData(prev => ({ 
-            prev, 
+            ...prev, 
             [name]: type === 'checkbox' ? checked : value 
         }));
     };
 
     const addLanguage = () => {
         setProfileData(prev => ({
-            prev,
-            languages: [prev.languages, { language: '', proficiency: '', read: false, write: false, speak: false, id: Date.now() }]
+            ...prev,
+            languages: [...prev.languages, { language: '', proficiency: '', read: false, write: false, speak: false, id: Date.now() }]
         }));
     };
 
     const removeLanguage = (id) => {
         setProfileData(prev => ({
-            prev,
+            ...prev,
             languages: prev.languages.filter(lang => lang.id !== id)
         }));
     };
     
     const handleLanguageChange = (id, field, value) => {
         setProfileData(prev => ({
-            prev,
+            ...prev,
             languages: prev.languages.map(lang => 
-                lang.id === id ? { lang, [field]: value } : lang
+                lang.id === id ? { ...lang, [field]: value } : lang
             )
         }));
     };
@@ -127,7 +127,7 @@ const CandidateEditProfile = () => {
                 <SectionTitle title="Languages Known" Icon={FiCalendar} onAdd={addLanguage} />
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
-                        {/*  (Table head remains the same)  */}
+                        {/* ... (Table head remains the same) ... */}
                         <tbody className="bg-white divide-y divide-gray-200">
                             {profileData.languages.map(lang => (
                                 <tr key={lang.id}>

@@ -33,7 +33,7 @@ const FeedbackPage = () => {
                         onChange={(e) => setFeedback(e.target.value)}
                         required
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-accent-teal focus:border-accent-teal transition"
-                        placeholder="Type your feedback here"
+                        placeholder="Type your feedback here..."
                     ></textarea>
                 </div>
                 

@@ -13,7 +13,7 @@ const ResetPassword = () => {
     const [showPassword, setShowPassword] = useState({}); // State for individual eye toggles
 
     const handleChange = (e) => {
-        setPasswords({ passwords, [e.target.name]: e.target.value });
+        setPasswords({ ...passwords, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = (e) => {
@@ -45,7 +45,7 @@ const ResetPassword = () => {
                     />
                     <span 
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-primary-dark" 
-                        onClick={() => setShowPassword(prev => ({ prev, [name]: !isVisible }))}
+                        onClick={() => setShowPassword(prev => ({ ...prev, [name]: !isVisible }))}
                     >
                         {isVisible ? <FiEyeOff /> : <FiEye />}
                     </span>
