@@ -121,6 +121,36 @@ const CandidateProfile = () => {
                 )}
             </Section>
 
+
+            <Section title="Internships" Icon={FiBriefcase}>
+                {profile.internships && profile.internships.length > 0 ? (
+                    profile.internships.map((intern, index) => (
+                    <div key={index} className="border-l-4 border-accent-teal pl-4 py-2 mb-4 bg-gray-50 rounded-lg">
+                        <p className="font-semibold text-primary-dark">{intern.companyName}</p>
+                        <p className="text-sm text-gray-600">Type: {intern.type}</p>
+                        <p className="text-sm text-gray-600">Duration: {intern.duration}</p>
+                        <p className="text-sm text-gray-600">Project: {intern.projectName}</p>
+                        <p className="text-sm text-gray-600">Responsibilities: {intern.responsibilities}</p>
+                        <p className="text-sm text-gray-600">Stipend: {intern.stipend || "N/A"}</p>
+                        {intern.certificateUrl && (
+                            <a 
+                            href={intern.certificateUrl} 
+                            target="_blank" 
+                            className="text-blue-600 underline text-sm"
+                            >
+                            
+                            View Certificate
+                           </a>
+                        )}
+                        </div>
+                        ))
+                    ) : (
+                    <p className="text-gray-500">No internship details recorded.</p>
+                )}
+           
+            </Section>
+
+
             <button className="mt-8 px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition shadow-lg">
                 Delete My Account
             </button>
