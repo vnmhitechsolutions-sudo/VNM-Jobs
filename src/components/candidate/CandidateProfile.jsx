@@ -1,14 +1,12 @@
-// src/components/candidate/CandidateProfile.jsx (Reading Dynamic Data)
+// src/components/candidate/CandidateProfile.jsx
 import React from 'react';
-import { useSelector } from 'react-redux'; // <-- NEW IMPORT
-import { selectAuth } from '../../redux/authSlice'; // <-- NEW IMPORT
+import { useSelector } from 'react-redux';
+import { selectAuth } from '../../redux/authSlice'; 
 import CandidateDashboardLayout from './CandidateDashboardLayout';
-import { FiMail, FiPhone, FiCalendar, FiBriefcase, FiUser } from 'react-icons/fi';
+import { FiMail, FiPhone, FiCalendar, FiBriefcase, FiUser, FiMapPin, FiEdit2, FiCheckCircle } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
-// NOTE: Mock data object is now deleted, replaced by Redux selector.
-
-// Helper component for cleaner layout (Section remains the same)
+// Helper component for clean display (Section remains the same)
 const Section = ({ title, Icon, children }) => (
     <div className="mb-8 p-6 border border-gray-200 rounded-xl shadow-sm">
         <h3 className="text-xl font-bold text-primary-dark mb-4 flex items-center border-b border-accent-teal/50 pb-2">
@@ -18,79 +16,105 @@ const Section = ({ title, Icon, children }) => (
     </div>
 );
 
+// Component to generate the completion circle color
+const getCompletionColor = (percent) => {
+    if (percent === 100) return 'border-green-500 text-green-500';
+    if (percent >= 75) return 'border-yellow-500 text-yellow-500';
+    return 'border-red-500 text-red-500';
+};
+
+
 const CandidateProfile = () => {
-    // 💥 FIX: Read all profile data and completion status from Redux
     const { profile, profileCompletion, userName } = useSelector(selectAuth);
     
-    // Destructure necessary fields (use optional chaining for safety)
+    // Destructure necessary fields (using defaults for safe rendering)
     const { 
         name, email, mobile, educationDetails, languages, desiredCareer, 
-        shortProfileDescription 
+        shortProfileDescription, gender, dob, currentAddress
     } = profile;
     
-    // Provide defaults if data is null
     const nameDisplay = name || 'User Profile';
     const completion = profileCompletion || 0;
-    
-    // Check if profile data exists before attempting to display.
-    if (!name) {
-        return (
-            <CandidateDashboardLayout title="My Profile (View)">
-                <div className="text-center py-12">
-                    <FiInfo className="text-6xl text-gray-400 mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold text-primary-dark">No Profile Data Found</h2>
-                    <p className="text-gray-600 mt-2">Please go to Edit Profile to complete your details.</p>
-                    <Link to="/candidate/edit-profile" className="mt-4 px-4 py-2 bg-accent-teal text-primary-dark font-semibold rounded-lg hover:bg-teal-400 transition shadow-md inline-block">
-                        Go to Edit Profile
-                    </Link>
-                </div>
-            </CandidateDashboardLayout>
-        );
-    }
+    const completionColorClass = getCompletionColor(completion);
 
     return (
         <CandidateDashboardLayout title="My Profile (View)">
-            <div className="flex justify-between items-center pb-4 border-b border-gray-200 mb-6">
-                <h2 className="text-3xl font-bold text-primary-dark">Welcome, {userName || nameDisplay.split(' ')[0]}! 👋</h2>
-                <Link to="/candidate/edit-profile" className="px-4 py-2 bg-accent-teal text-primary-dark font-semibold rounded-lg hover:bg-teal-400 transition shadow-md">
-                    Edit Profile
-                </Link>
-            </div>
             
-            {/* Profile Header Card */}
-            <div className="flex items-center space-x-6 p-4 bg-indigo-50 rounded-xl mb-8 border border-indigo-100">
-                <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center text-primary-dark text-xl font-bold border-4 border-accent-teal">
-                    {nameDisplay.charAt(0)}
-                </div>
-                <div>
-                    <h3 className="text-xl font-bold text-primary-dark">{nameDisplay}</h3>
-                    <div className="text-sm text-gray-600 space-y-1 mt-1">
-                        <p className="flex items-center"><FiMail className="mr-2" />{email || 'N/A'}</p>
-                        <p className="flex items-center"><FiPhone className="mr-2" />{mobile || 'N/A'}</p>
+            {/* --- UNIFIED PROFILE CARD (Referencing your image) --- */}
+            <div className="bg-card-bg p-6 rounded-xl shadow-classic border border-gray-100 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+                    
+                    {/* LEFT COLUMN: Photo, Completion, Name/Title */}
+                    <div className="md:col-span-1 flex flex-col items-center border-r border-gray-100 pr-6">
+                        {/* Profile Photo Circle & Percentage */}
+                        <div className={`relative w-32 h-32 rounded-full flex items-center justify-center mb-4 border-4 ${completionColorClass}`}>
+                            <div className="w-28 h-28 rounded-full bg-gray-300 overflow-hidden">
+                                {/*  */}
+                                <FiUser className="text-gray-500 text-6xl w-full h-full p-6" />
+                            </div>
+                            <span className={`absolute bottom-0 right-0 px-2 py-1 text-xs font-bold rounded-full bg-white border ${completionColorClass}`}>
+                                {completion}%
+                            </span>
+                        </div>
+                        
+                        <h3 className="text-2xl font-extrabold text-primary-dark mt-2">{nameDisplay}</h3>
+                        <p className="text-md text-gray-600 mb-4">B.Tech./B.E. (Placeholder)</p>
+                        
+                        <Link to="/candidate/edit-profile" className="flex items-center text-accent-teal hover:underline transition">
+                            <FiEdit2 className="mr-1 text-lg"/> Edit Profile
+                        </Link>
                     </div>
-                </div>
-                <div className="ml-auto text-right">
-                    <span className="text-sm font-medium text-gray-700">Profile Completion</span>
-                    <div className="w-32 bg-gray-200 rounded-full h-2.5 mt-1">
-                        <div className="bg-accent-teal h-2.5 rounded-full" style={{ width: `${completion}%` }}></div>
+
+                    {/* CENTER COLUMN: Contact Details & Info */}
+                    <div className="md:col-span-2 pt-4">
+                        <h4 className="text-xl font-bold text-primary-dark mb-4 border-b pb-2">Profile Details</h4>
+                        <div className="grid grid-cols-2 gap-y-3 text-sm">
+                            
+                            <div className="flex items-center space-x-2"><FiMapPin className="text-accent-teal" /> <span>{currentAddress || 'N/A Location'}</span></div>
+                            <div className="flex items-center space-x-2"><FiPhone className="text-accent-teal" /> <span>{mobile || 'N/A Phone'}</span></div>
+                            
+                            <div className="flex items-center space-x-2"><FiUser className="text-accent-teal" /> <span>{gender || 'N/A Gender'}</span></div>
+                            <div className="flex items-center space-x-2"><FiMail className="text-accent-teal" /> <span>{email || 'N/A Email'}</span></div>
+                            
+                            <div className="flex items-center space-x-2"><FiCalendar className="text-accent-teal" /> <span>DOB: {dob || 'N/A'}</span></div>
+                            
+                        </div>
+                        
+                        {/* Call to Action for Missing Details (Referencing image_77bbbe.png) */}
+                        <div className="mt-8 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                            <h4 className="text-md font-bold text-primary-dark mb-2">Add Missing Details</h4>
+                            <div className="space-y-2 text-sm text-yellow-800">
+                                <div className="flex justify-between">
+                                    <span>Add project</span> <span><span className="text-green-600">↑7%</span></span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Add certificates</span> <span><span className="text-green-600">↑5%</span></span>
+                                </div>
+                            </div>
+                            <Link to="/candidate/edit-profile" className="mt-4 px-4 py-2 inline-block bg-red-500 text-white font-bold rounded-lg transition hover:bg-red-600">
+                                Add {100 - completion}% Missing Details
+                            </Link>
+                        </div>
                     </div>
-                    <span className="text-md font-bold text-primary-dark mt-1 block">{completion}%</span>
                 </div>
             </div>
+            {/* --- END UNIFIED PROFILE CARD --- */}
 
-            {/* Profile Sections - Now DYNAMIC */}
+
+            {/* --- REST OF PROFILE SECTIONS (Simplified List View) --- */}
             <Section title="Desired Career Profile" Icon={FiBriefcase}>
                 <p className="text-lg font-medium text-primary-dark mb-2">{desiredCareer || 'N/A'}</p>
                 <p className="text-gray-600">{shortProfileDescription || 'No description provided.'}</p>
             </Section>
 
+            {/* ... (Education Details, Languages Known sections follow) ... */}
+            
             <Section title="Education Details" Icon={FiCalendar}>
                 {educationDetails && educationDetails.length > 0 ? (
                     educationDetails.map((edu, index) => (
                         <div key={index} className="border-l-4 border-accent-teal pl-4 py-2 mb-4 bg-gray-50 rounded-lg">
                             <p className="font-semibold text-primary-dark">{edu.degree}</p>
-                            <p className="text-sm text-gray-600">{edu.college} - {edu.percentage}</p>
-                            <p className="text-xs text-gray-500">{edu.year}</p>
+                            <p className="text-sm text-gray-600">{edu.college}</p>
                         </div>
                     ))
                 ) : (
@@ -100,26 +124,12 @@ const CandidateProfile = () => {
 
             <Section title="Languages Known" Icon={FiUser}>
                 {languages && languages.length > 0 ? (
-                    <table className="min-w-full divide-y divide-gray-200">
-                        {/* ... (Table head remains the same) ... */}
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {languages.map(lang => (
-                                <tr key={lang.id}>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary-dark">{lang.language}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lang.proficiency}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {lang.read && 'Read, '}
-                                        {lang.write && 'Write, '}
-                                        {lang.speak && 'Speak'}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <p className="text-gray-600">Languages added: {languages.length}</p>
                 ) : (
                     <p className="text-gray-500">No languages recorded.</p>
                 )}
             </Section>
+
 
             <button className="mt-8 px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition shadow-lg">
                 Delete My Account

@@ -1,18 +1,22 @@
 // src/components/CandidateLogin.jsx
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; //useNavigate
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess, selectRegisteredUsers } from '../redux/authSlice'; 
+
 import AuthLayoutSide from './AuthLayoutSide';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiRefreshCw } from 'react-icons/fi';
 import { motion } from 'framer-motion';
-import { loginSuccess } from '../redux/authSlice';
-import { useDispatch } from 'react-redux'; //useDispatch
+
 const CandidateLogin = () => {
-    const navigate = useNavigate(); //INITIALIZE DISPATCH
-    const dispatch = useDispatch();//INITIALIZE HOOK
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const registeredUsers = useSelector(selectRegisteredUsers);
+
     const [showPassword, setShowPassword] = useState(false);
     const [captcha, setCaptcha] = useState('');
     const [captchaInput, setCaptchaInput] = useState('');
-    const [loginData, setLoginData] = useState({ email: '', password: '' });
+    const [loginData, setLoginData] = useState({ identifier: '', password: '' }); // Renamed 'email' to 'identifier'
 
     const generateCaptcha = () => {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -29,18 +33,37 @@ const CandidateLogin = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        
+        // 1. CAPTCHA Check
         if (captchaInput !== captcha) {
             alert('Invalid CAPTCHA. Please try again.');
             generateCaptcha();
             setCaptchaInput('');
+            return;
+        } 
+        
+        // 2. Find and Validate User (against master list)
+        const identifier = loginData.identifier.trim();
+        
+        // 🔥 FIX: Check if the identifier matches either email OR mobile number
+        const userFound = registeredUsers.find(
+            user => 
+                (user.email === identifier || user.mobile === identifier) && 
+                user.password === loginData.password
+        );
+        
+        if (userFound) {
+            // Success
+            dispatch(loginSuccess({ profile: userFound, name: userFound.name })); 
+            
+            alert(`Welcome back, ${userFound.name.split(' ')[0]}! Redirecting to Dashboard.`);
+            navigate('/candidate/dashboard'); 
+            
         } else {
-            //  AUTHENTICATION SUCCESS LOGIC 
-            console.log('Candidate Login Data:', loginData);
-            dispatch(loginSuccess({ name: 'Gowthaman' })); //DISPATCH SUCCESS
-            // Replaced alert with navigation logic:
-            alert('Login successful! Redirecting to Dashboard.'); 
-            navigate('/candidate/dashboard'); // <-- REDIRECT TO DASHBOARD
-            //  END AUTH LOGIC 
+            // Failure
+            alert('Login failed: Invalid identifier or password.');
+            generateCaptcha();
+            setCaptchaInput('');
         }
     };
 
@@ -51,6 +74,8 @@ const CandidateLogin = () => {
     return (
         <AuthLayoutSide title="Login as Candidate" infoType="candidate">
             <form onSubmit={handleSubmit}>
+                
+                {/* 1. Email / Mobile Number Input (Now Identifier) */}
                 <div className="form-group mb-4">
                     <label htmlFor="c-email-login" className="block text-sm font-medium text-gray-700 mb-1">E-mail / Mobile Number</label>
                     <div className="relative">
@@ -58,8 +83,8 @@ const CandidateLogin = () => {
                         <input
                             type="text"
                             id="c-email-login"
-                            name="email"
-                            value={loginData.email}
+                            name="identifier" // Renamed input name to identifier
+                            value={loginData.identifier}
                             onChange={handleChange}
                             required
                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-accent-teal focus:border-accent-teal transition"
@@ -67,6 +92,7 @@ const CandidateLogin = () => {
                     </div>
                 </div>
 
+                {/* 2. Password Input */}
                 <div className="form-group mb-4">
                     <label htmlFor="c-password-login" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
                     <div className="relative">
@@ -89,6 +115,7 @@ const CandidateLogin = () => {
                     </div>
                 </div>
 
+                {/* 3. CAPTCHA Verification (Remains the same) */}
                 <div className="form-group mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-1">CAPTCHA Verification</label>
                     <div className="flex items-center space-x-3">
@@ -115,6 +142,7 @@ const CandidateLogin = () => {
                     </div>
                 </div>
 
+                {/* 4. Links and CTA (Remains the same) */}
                 <div className="form-links flex justify-between items-center mb-6 text-sm">
                     <p className="text-gray-600">
                         New Account?{' '}
