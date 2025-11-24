@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { jobsData } from '../data/JobData'; 
-import { filterOptions } from '../data/FilterOptions'; 
+import { filterOptions } from '../data/FilterOptions'; // <-- CRITICAL: Imported the new data structure
 import JobCard from './JobCard'; 
 import { FiFilter, FiChevronDown, FiSearch, FiLayout, FiList } from 'react-icons/fi';
 import { motion } from 'framer-motion';
@@ -27,7 +27,8 @@ const FilterSection = ({ title, options, type, handleCheckboxChange, isOpen, onC
                 transition={{ duration: 0.3 }}
                 style={{ overflow: 'hidden' }} 
             >
-                <div className="max-h-60 overflow-y-auto pr-2">
+                {/* Scrollable Container */}
+                <div className="max-h-60 overflow-y-auto pr-2"> 
                     {options.map(option => (
                         <label key={option.value} className="flex items-center space-x-3 text-sm text-gray-600 cursor-pointer hover:text-primary-dark transition">
                             <input 
@@ -52,13 +53,23 @@ const JobsPage = () => {
     const [jobRoleSearch, setJobRoleSearch] = useState('');
     const [filteredJobs, setFilteredJobs] = useState(jobsData);
     
-    // 1. CRITICAL CHANGE: Set initial state to all false (closed)
-    const [filterSectionOpen, setFilterSectionOpen] = useState({
-        location: false, sector: false, experience: false, salary: false, type: false
-    });
+    // Define the full list of filter categories in the correct display order
+    const filterCategories = [
+        'location', 'type', 'sector', 'gender', 'experience', 
+        'salary_range', 'qualification', 'differently_abled'
+    ];
+
+    // Initialize state for opening/closing filter sections
+    // Defaulting all to false (closed)
+    const initialFilterState = filterCategories.reduce((acc, category) => {
+        acc[category] = false;
+        return acc;
+    }, {});
+    
+    const [filterSectionOpen, setFilterSectionOpen] = useState(initialFilterState);
     const [viewMode, setViewMode] = useState('list'); 
 
-    // Filter Logic (Omitted for brevity, no changes) 
+    // Filter Logic (Ensures filtering works across all new categories) 
     useEffect(() => {
         const newFilteredJobs = jobsData.filter(job => {
             const matchesJobRole = job.title.toLowerCase().includes(jobRoleSearch.toLowerCase());
@@ -66,6 +77,7 @@ const JobsPage = () => {
 
             for (const filterType in filters) {
                 if (filters[filterType] && filters[filterType].length > 0) {
+                    // Check if the job's value for this filterType is NOT in the selected list
                     if (!filters[filterType].includes(job[filterType])) {
                         return false; 
                     }
@@ -89,17 +101,16 @@ const JobsPage = () => {
         });
     };
 
-    // 2. CRITICAL CHANGE: Implement accordion logic
+    // Implements accordion logic for filter sections
     const handleFilterTitleClick = (section) => {
         setFilterSectionOpen(prev => {
-            // Start with all sections closed (false)
-            const newState = Object.keys(prev).reduce((acc, key) => {
+            // Close all sections first
+            const newState = filterCategories.reduce((acc, key) => {
                 acc[key] = false;
                 return acc;
             }, {});
 
-            // Toggle the clicked section. If it was closed, open it (true).
-            // If it was already open, the logic above closed it, effectively toggling it off.
+            // Then toggle the clicked section (open it if it was closed)
             if (!prev[section]) {
                 newState[section] = true;
             }
@@ -108,7 +119,6 @@ const JobsPage = () => {
         });
     };
     
-    // The rest of the component (return statement) remains the same
     return (
         <main className="pt-[80px] bg-primary-light min-h-screen">
             <div className="bg-primary-dark py-10">
@@ -122,6 +132,7 @@ const JobsPage = () => {
             
             <div className="container mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-4 gap-8">
                 
+                {/* 1. Filter Sidebar */}
                 <div className="lg:col-span-1">
                     <div className="lg:sticky lg:top-24 bg-card-bg p-6 rounded-xl shadow-classic border border-gray-100">
                         <h3 className="text-xl font-bold text-primary-dark mb-4 border-b pb-3">Refine Search</h3>
@@ -138,12 +149,13 @@ const JobsPage = () => {
                             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         </div>
 
-                        {/* Filter Sections */}
-                        {Object.keys(filterOptions).map(section => (
+                        {/* Filter Sections Loop */}
+                        {filterCategories.map(section => (
                             <FilterSection
                                 key={section}
-                                title={section.charAt(0).toUpperCase() + section.slice(1)}
-                                options={filterOptions[section]} 
+                                // Uses custom logic for title casing (e.g., salary_range -> Salary_range)
+                                title={section.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                                options={filterOptions[section]} // Uses data from FilterOptions.js
                                 type={section}
                                 handleCheckboxChange={handleCheckboxChange}
                                 isOpen={filterSectionOpen[section]}
@@ -161,7 +173,7 @@ const JobsPage = () => {
                     </div>
                 </div>
 
-                {/* 2. Job Listings Results (Omitted for brevity, no changes) */}
+                {/* 2. Job Listings Results */}
                 <div className="lg:col-span-3">
                     <div className="flex justify-between items-center mb-6 pb-3 border-b border-gray-300">
                         <p className="text-lg font-semibold text-gray-700">Displaying {filteredJobs.length} Jobs</p>
@@ -209,4 +221,4 @@ const JobsPage = () => {
     );
 };
 
-export default JobsPage
+export default JobsPage;

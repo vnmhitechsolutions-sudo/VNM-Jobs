@@ -19,7 +19,7 @@ const Footer = () => {
                     <div className="col-span-2 md:col-span-1 space-y-4">
                         <Link to="/" className="text-2xl font-extrabold flex items-center text-white">
                             <FiBriefcase className="mr-2 text-accent-yellow text-3xl" />
-                            R<span className="text-accent-teal">Skills</span>
+                            VNM<span className="text-accent-teal">JOBS</span>
                         </Link>
                         <p className="text-gray-400 text-sm">
                             The advanced private job portal for aspiring talent across sectors.

@@ -1,6 +1,8 @@
-// src/components/candidate/DashboardSidebar.jsx
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux'; // <-- CRITICAL: Import useDispatch
+import { logout } from '../../redux/authSlice'; // <-- CRITICAL: Import the logout action
+
 import { 
     FiGrid, FiUser, FiEdit3, FiSearch, FiCheckSquare, 
     FiBookmark, FiCalendar, FiLock, FiLogOut, FiLayers, 
@@ -25,16 +27,20 @@ const NavItem = ({ to, Icon, label }) => (
 
 const DashboardSidebar = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch(); // <-- Initialize dispatch hook
 
     const handleLogout = () => {
-        // Add any logout logic here (clear tokens, etc.)
-        // For now, just navigate to home page
+        // 1. Dispatch Redux action to clear global user state
+        dispatch(logout()); 
+        
+        // 2. Redirect to the public home page
         navigate('/');
     };
 
     return (
         <div className="bg-card-bg p-4 rounded-xl shadow-lg border border-gray-100 space-y-1 sticky top-24">
             
+            {/* --- PRIMARY NAV ITEMS --- */}
             <NavItem to="/candidate/dashboard" Icon={FiGrid} label="Dashboard" /> 
             <NavItem to="/candidate/profile" Icon={FiUser} label="My Profile" />
             <NavItem to="/candidate/edit-profile" Icon={FiEdit3} label="Edit Profile" />
@@ -55,9 +61,10 @@ const DashboardSidebar = () => {
                 <NavItem to="/candidate/reset-password" Icon={FiKey} label="Reset Password" />
             </div>
 
+            {/* --- LOGOUT BUTTON (Triggers full Redux logout and redirect) --- */}
             <button
                 onClick={handleLogout}
-                className="flex items-center space-x-3 p-3 text-sm font-medium transition duration-300 text-gray-600 hover:bg-gray-100 hover:text-primary-dark w-full text-left"
+                className="flex items-center space-x-3 p-3 text-sm font-medium transition duration-300 text-red-600 hover:bg-red-50 w-full text-left"
             >
                 <FiLogOut className="text-lg min-w-[20px]" />
                 <span>Logout</span>
