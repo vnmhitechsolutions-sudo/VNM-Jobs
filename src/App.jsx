@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 // Import all the enhanced components
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
+import ScrollToTop from './components/ScrollToTop'; 
 
 // Core Pages
 import HomePage from './components/HomePage.jsx';
@@ -39,6 +40,7 @@ const App = () => {
       {/* The Header and Footer are rendered outside the <Routes> 
         to ensure they appear on every page, providing a consistent layout.
       */}
+      <ScrollToTop />
       <Header /> 
       
       <Routes>
@@ -79,6 +81,7 @@ const App = () => {
       </Routes>
       
       <Footer />
+      <ScrollToTop/>
     </Router>
   );
 };
