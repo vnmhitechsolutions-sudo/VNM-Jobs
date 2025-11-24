@@ -130,7 +130,6 @@ const CandidateProfile = () => {
                 )}
             </Section>
 
-
             <button className="mt-8 px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition shadow-lg">
                 Delete My Account
             </button>

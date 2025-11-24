@@ -99,6 +99,10 @@ const CandidateEditProfile = () => {
         isDisabled: profile.isDisabled || 'No', disabilityType: profile.disabilityType || null, 
         languages: profile.languages || [], educationDetails: profile.educationDetails || [],
         desiredCareer: profile.desiredCareer || '',
+        shortProfileDescription: profile.shortProfileDescription || '',
+        languages: profile.languages || [],
+        educationDetails: profile.educationDetails || [],
+        internships: profile.internships || []
     });
 
     const [profilePicture, setProfilePicture] = useState(profile.profilePicture || null);
@@ -162,6 +166,75 @@ const CandidateEditProfile = () => {
         }));
     };
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        
+        // Dispatch the entire updated profile object to Redux
+        dispatch(updateProfile(profileData));
+        
+        alert("Profile updated successfully! Completion recalculated.");
+    };
+
+    const addInternship = () => {
+        setProfileData(prev => ({
+            ...prev,
+            internships: [
+                ...(prev.internships || []),
+                {
+                    companyName: "",
+                    type: "",
+                    duration: "",
+                    projectName: "",
+                    responsibilities: "",
+                    stipend: "",
+                    certificateFile: null
+                }
+            ]
+        }));
+    };
+
+    const updateInternship = (index, field, value) => {
+        const updated = [...(profileData.internships || [])];
+        updated[index] = { ...(updated[index] || {}), [field]: value };
+        setProfileData({ ...profileData, internships: updated });
+        console.log('internships updated:', updated);
+    };
+
+    const removeInternship = (index) => {
+        const updated = [...profileData.internships];
+        updated.splice(index, 1);
+        setProfileData({ ...profileData, internships: updated });
+    };
+
+    // REPLACE the existing Input definition with this
+    const Input = ({ label, name, type = 'text', value, onChange, required = true, disabled = false, halfWidth = false }) => (
+    <div className={`mb-4 ${halfWidth ? 'md:w-1/2 md:pr-2' : 'w-full'}`}>
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      {label} {required && '*'}
+    </label>
+    <input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange ?? handleFormChange}   // <-- use custom onChange if provided, otherwise fallback
+      required={required}
+      disabled={disabled}
+      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-accent-teal focus:border-accent-teal transition"
+    />
+  </div>
+);
+
+
+    const SectionTitle = ({ title, Icon, onAdd }) => (
+        <h3 className="text-xl font-bold text-primary-dark mb-4 mt-6 flex justify-between items-center border-b border-gray-200 pb-2">
+            <span className="flex items-center"><Icon className="mr-2 text-accent-teal" /> {title}</span>
+            {onAdd && (
+                <button type="button" onClick={onAdd} className="text-accent-teal hover:text-primary-dark transition flex items-center text-sm font-semibold">
+                    <FiPlus className="mr-1" /> Add
+                </button>
+            )}
+        </h3>
+    );
 
     // Options Lists
     const genderOptions = [{ value: 'Male', label: 'Male' }, { value: 'Female', label: 'Female' }, { value: 'Other', label: 'Other' }];
@@ -290,6 +363,144 @@ const CandidateEditProfile = () => {
 
             <form onSubmit={handleSaveSection} className="p-6 border border-gray-100 rounded-xl shadow-sm mb-8">
                 <SectionTitle title="Languages Known" Icon={FiCalendar} onAdd={addLanguage} />
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        {/* ... (Table head remains the same) ... */}
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {profileData.languages.map(lang => (
+                                <tr key={lang.id}>
+                                    <td className="px-3 py-3"><input type="text" value={lang.language} onChange={(e) => handleLanguageChange(lang.id, 'language', e.target.value)} className="w-full border-gray-300 rounded-md text-sm" /></td>
+                                    <td className="px-3 py-3"><input type="text" value={lang.proficiency} onChange={(e) => handleLanguageChange(lang.id, 'proficiency', e.target.value)} className="w-full border-gray-300 rounded-md text-sm" /></td>
+                                    {['read', 'write', 'speak'].map(field => (
+                                        <td key={field} className="px-3 py-3 text-center">
+                                            <input type="checkbox" checked={lang[field]} onChange={(e) => handleLanguageChange(lang.id, field, e.target.checked)} className="form-checkbox text-accent-teal rounded" />
+                                        </td>
+                                    ))}
+                                    <td className="px-3 py-3">
+                                        <button type="button" onClick={() => removeLanguage(lang.id)} className="text-red-600 hover:text-red-900 transition"><FiTrash2 /></button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/*  5. Technical Skills and Certifications (Placeholders)  */}
+                <SectionTitle title="Certification Details" Icon={FiCalendar} onAdd={() => alert("Add Certification Form")} />
+                <SectionTitle title="Technical Skill Details" Icon={FiCalendar} onAdd={() => alert("Add Technical Skill Form")} />
+
+                {/* 6. Internship Details */}
+
+                <SectionTitle title="Internship Details" Icon={FiBriefcase} onAdd={addInternship} />
+
+                {profileData.internships && profileData.internships.length > 0 ? (
+                    profileData.internships.map((intern, index) => (
+                    <div key={index} className="p-4 border border-gray-300 rounded-lg bg-gray-50 mb-4">
+
+                    <div className="w-full mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                        <input
+                            type="text"
+                            value={intern.companyName || ''}
+        
+                            onChange={(e) => updateInternship(index, 'companyName', e.target.value)}
+        
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+        
+                        />
+                    </div>
+
+               {/* Internship Type */}
+                <div className="w-full mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Internship Type</label>
+                    <select
+                        value={intern.type || ''}
+                        onChange={(e) => updateInternship(index, 'type', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                    >
+                        <option value="">Select Type</option>
+                        <option value="Onsite">Onsite</option>
+                        <option value="Remote">Remote</option>
+                   </select>
+                </div>
+
+      {/* Duration */}
+      <div className="w-full mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+        <input
+          type="text"
+          value={intern.duration || ''}
+          onChange={(e) => updateInternship(index, 'duration', e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+          placeholder="e.g. 3 months / Jun 2023 - Aug 2023"
+        />
+      </div>
+
+      {/* Project Name */}
+      <div className="w-full mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Project Name</label>
+        <input
+          type="text"
+          value={intern.projectName || ''}
+          onChange={(e) => updateInternship(index, 'projectName', e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+        />
+      </div>
+
+      {/* Responsibilities (already working) */}
+      <div className="w-full mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Responsibilities</label>
+        <textarea
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+          value={intern.responsibilities || ''}
+          onChange={(e) => updateInternship(index, 'responsibilities', e.target.value)}
+          rows={4}
+        />
+      </div>
+
+      {/* Stipend */}
+      <div className="w-full mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Stipend</label>
+        <input
+          type="text"
+          value={intern.stipend || ''}
+          onChange={(e) => updateInternship(index, 'stipend', e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+          placeholder="e.g. 5000 / N/A"
+        />
+      </div>
+
+      {/* Certificate Upload */}
+      <div className="w-full mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Certificate (Optional)</label>
+        <input
+          type="file"
+          onChange={(e) => updateInternship(index, 'certificateFile', e.target.files[0])}
+          className="w-full"
+        />
+      </div>
+
+      <div className="flex justify-between items-center">
+        <button
+          type="button"
+          onClick={() => removeInternship(index)}
+          className="px-3 py-1 bg-red-500 text-white rounded"
+        >
+          Remove Internship
+        </button>
+      </div>
+    </div>
+  ))
+) : (
+  <p className="text-gray-500">No internships added yet.</p>
+)}
+
+
+                {/* Submit Button */}
+                <div className="flex justify-end pt-4">
+                    <button type="submit" className="px-6 py-3 bg-primary-dark text-white font-bold rounded-lg hover:bg-gray-700 transition shadow-lg flex items-center">
+                        <FiSave className="mr-2" /> Save Changes
+                    </button>
                 {/* ... (Languages table/edit logic would go here) ... */}
                 <div className="flex justify-end pt-4 border-t border-gray-200">
                     <button type="submit" className="px-4 py-2 bg-primary-dark text-white font-bold rounded-lg hover:bg-gray-700 transition shadow-lg text-sm">Save Changes</button>
