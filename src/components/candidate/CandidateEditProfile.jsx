@@ -83,9 +83,10 @@ const CandidateEditProfile = () => {
     };
 
     const updateInternship = (index, field, value) => {
-        const updated = [...profileData.internships];
-        updated[index][field] = value;
+        const updated = [...(profileData.internships || [])];
+        updated[index] = { ...(updated[index] || {}), [field]: value };
         setProfileData({ ...profileData, internships: updated });
+        console.log('internships updated:', updated);
     };
 
     const removeInternship = (index) => {
@@ -186,86 +187,110 @@ const CandidateEditProfile = () => {
                 <SectionTitle title="Technical Skill Details" Icon={FiCalendar} onAdd={() => alert("Add Technical Skill Form")} />
 
                 {/* 6. Internship Details */}
+
                 <SectionTitle title="Internship Details" Icon={FiBriefcase} onAdd={addInternship} />
 
                 {profileData.internships && profileData.internships.length > 0 ? (
                     profileData.internships.map((intern, index) => (
-                
-            <div key={index} className="p-4 border border-gray-300 rounded-lg bg-gray-50 mb-4">
+                    <div key={index} className="p-4 border border-gray-300 rounded-lg bg-gray-50 mb-4">
 
-            <Input 
-                label="Company Name" 
-                name={`intern_company_${index}`}
-                value={intern.companyName}
-                onChange={(e) => updateInternship(index, "companyName", e.target.value)}
-            />
+                    <div className="w-full mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                        <input
+                            type="text"
+                            value={intern.companyName || ''}
+        
+                            onChange={(e) => updateInternship(index, 'companyName', e.target.value)}
+        
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+        
+                        />
+                    </div>
 
-            <div className="w-full mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Internship Type *</label>
-                <select
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    value={intern.type}
-                    onChange={(e) => updateInternship(index, "type", e.target.value)}
-                >
-                    <option value="">Select Type</option>
-                    <option value="Onsite">Onsite</option>
-                    <option value="Remote">Remote</option>
-                </select>
-            </div>
+               {/* Internship Type */}
+                <div className="w-full mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Internship Type</label>
+                    <select
+                        value={intern.type || ''}
+                        onChange={(e) => updateInternship(index, 'type', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                    >
+                        <option value="">Select Type</option>
+                        <option value="Onsite">Onsite</option>
+                        <option value="Remote">Remote</option>
+                   </select>
+                </div>
 
-            <Input 
-                label="Duration" 
-                name={`intern_duration_${index}`}
-                value={intern.duration}
-                onChange={(e) => updateInternship(index, "duration", e.target.value)}
-            />
+      {/* Duration */}
+      <div className="w-full mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+        <input
+          type="text"
+          value={intern.duration || ''}
+          onChange={(e) => updateInternship(index, 'duration', e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+          placeholder="e.g. 3 months / Jun 2023 - Aug 2023"
+        />
+      </div>
 
-            <Input 
-                label="Project Name" 
-                name={`intern_project_${index}`}
-                value={intern.projectName}
-                onChange={(e) => updateInternship(index, "projectName", e.target.value)}
-            />
+      {/* Project Name */}
+      <div className="w-full mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Project Name</label>
+        <input
+          type="text"
+          value={intern.projectName || ''}
+          onChange={(e) => updateInternship(index, 'projectName', e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+        />
+      </div>
 
-            <div className="w-full mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Responsibilities</label>
-                <textarea
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    value={intern.responsibilities}
-                    onChange={(e) => updateInternship(index, "responsibilities", e.target.value)}
-                ></textarea>
-            </div>
+      {/* Responsibilities (already working) */}
+      <div className="w-full mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Responsibilities</label>
+        <textarea
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+          value={intern.responsibilities || ''}
+          onChange={(e) => updateInternship(index, 'responsibilities', e.target.value)}
+          rows={4}
+        />
+      </div>
 
-            <Input 
-                label="Stipend" 
-                name={`intern_stipend_${index}`}
-                value={intern.stipend}
-                onChange={(e) => updateInternship(index, "stipend", e.target.value)}
-            />
+      {/* Stipend */}
+      <div className="w-full mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Stipend</label>
+        <input
+          type="text"
+          value={intern.stipend || ''}
+          onChange={(e) => updateInternship(index, 'stipend', e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+          placeholder="e.g. 5000 / N/A"
+        />
+      </div>
 
-            {/* Certificate Upload */}
-            <div className="w-full mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Certificate (Optional)</label>
-                <input
-                    type="file"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    onChange={(e) => updateInternship(index, "certificateFile", e.target.files[0])}
-                />
-            </div>
+      {/* Certificate Upload */}
+      <div className="w-full mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Certificate (Optional)</label>
+        <input
+          type="file"
+          onChange={(e) => updateInternship(index, 'certificateFile', e.target.files[0])}
+          className="w-full"
+        />
+      </div>
 
-            <button
-                type="button"
-                onClick={() => removeInternship(index)}
-                className="px-3 py-1 bg-red-500 text-white rounded"
-            >
-                Remove Internship
-            </button>
-        </div>
-    ))
+      <div className="flex justify-between items-center">
+        <button
+          type="button"
+          onClick={() => removeInternship(index)}
+          className="px-3 py-1 bg-red-500 text-white rounded"
+        >
+          Remove Internship
+        </button>
+      </div>
+    </div>
+  ))
 ) : (
-    <p className="text-gray-500">No internships added yet.</p>
+  <p className="text-gray-500">No internships added yet.</p>
 )}
-
 
 
                 {/* Submit Button */}
