@@ -84,19 +84,67 @@ const CandidateProfile = () => {
                 <p className="text-gray-600">{shortProfileDescription || 'No description provided.'}</p>
             </Section>
 
-            <Section title="Education Details" Icon={FiCalendar}>
-                {educationDetails && educationDetails.length > 0 ? (
-                    educationDetails.map((edu, index) => (
-                        <div key={index} className="border-l-4 border-accent-teal pl-4 py-2 mb-4 bg-gray-50 rounded-lg">
-                            <p className="font-semibold text-primary-dark">{edu.degree}</p>
-                            <p className="text-sm text-gray-600">{edu.college} - {edu.percentage}</p>
-                            <p className="text-xs text-gray-500">{edu.year}</p>
+            <Section title="Education" Icon={FiCalendar}>
+                {profile.educationDetails && profile.educationDetails.length > 0 ? (
+                    profile.educationDetails.map((edu, i) => (
+                    <div key={edu.id || i} className="border-l-4 border-accent-teal pl-4 py-3 mb-4 bg-gray-50 rounded-lg">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <p className="font-semibold text-primary-dark">{edu.course || edu.type}</p>
+                                <p className="text-sm text-gray-700 mt-1">{edu.institute}</p>
+                                {edu.boardOrCollege && <p className="text-sm text-gray-600 mt-1">{edu.boardOrCollege}</p>}
+                                {edu.specialization && <p className="text-sm text-gray-600 mt-1">Specialization: {edu.specialization}</p>}
+                                {edu.cgpaOrPercentage && <p className="text-sm text-gray-600 mt-1">Score: {edu.cgpaOrPercentage}</p>}
+                                {edu.courseType && <p className="text-sm text-gray-600 mt-1">Course Type: {edu.courseType}</p>}
+                                {edu.additionalNotes && <p className="mt-2 text-sm text-gray-600">{edu.additionalNotes}</p>}
+                            </div>
+                        <div className="text-right text-sm text-gray-500">
+                            <p>{edu.passingYear}</p>
                         </div>
-                    ))
-                ) : (
-                    <p className="text-gray-500">No education details recorded.</p>
-                )}
-            </Section>
+                    </div>
+                    {(edu.documentFileUrl || edu.documentFile) && (
+                        <a
+                            href={edu.documentFileUrl || edu.documentFile}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-sm text-blue-600 underline mt-2 inline-block"
+                            >
+                            {edu.documentFileName || 'View document'}
+                        </a>
+                    )}
+
+                    </div>
+                ))
+            ) : (
+            <p className="text-gray-500">No education details recorded.</p>
+        )}
+        </Section>
+
+
+                    {/* Experience */}
+        
+        <Section title="Work Experience" Icon={FiBriefcase}>
+            {profile.experience && profile.experience.length > 0 ? (
+                profile.experience.map((exp, i) => (
+                <div key={i} className="border-l-4 border-accent-teal pl-4 py-3 mb-4 bg-gray-50 rounded-lg">
+                    <p className="font-semibold text-primary-dark">{exp.jobTitle || 'Job Title Not Provided'}</p>
+                    <p className="text-sm text-gray-700 mt-1">{exp.companyName || 'Company Not Provided'}</p>
+                    <p className="text-sm text-gray-600 mt-1">
+                        {exp.startDate} - {exp.isCurrentJob ? "Present" : exp.endDate}
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1">
+                        Employment Type: {exp.employmentType || 'N/A'}
+                    </p>
+                    {exp.salary && (
+                        <p className="text-sm text-gray-600 mt-1">Salary: {exp.salary}</p>
+                    )}
+                    <p className="text-sm text-gray-600 mt-2">{exp.description}</p>
+                </div>
+                ))
+            ) : (
+            <p className="text-gray-500">No experience recorded.</p>
+            )}
+        </Section>
 
             <Section title="Languages Known" Icon={FiUser}>
                 {languages && languages.length > 0 ? (
@@ -120,7 +168,6 @@ const CandidateProfile = () => {
                     <p className="text-gray-500">No languages recorded.</p>
                 )}
             </Section>
-
 
             <Section title="Internships" Icon={FiBriefcase}>
                 {profile.internships && profile.internships.length > 0 ? (
@@ -150,6 +197,25 @@ const CandidateProfile = () => {
            
             </Section>
 
+        {/* Projects */}
+
+        <Section title="Projects" Icon={FiBriefcase}>
+            {profile.projects && profile.projects.length > 0 ? (
+                profile.projects.map((p, i) => (
+                    <div key={i} className="border-l-4 border-accent-teal pl-4 py-3 mb-4 bg-gray-50 rounded-lg">
+                        <p className="font-semibold text-primary-dark">{p.title || 'Untitled Project'}</p>
+                        <p className="text-sm text-gray-600 mt-1">{p.description || 'No description'}</p>
+                        {p.url && (
+                            <a href={p.url} target="_blank" rel="noreferrer" className="text-sm text-blue-600 underline mt-1 inline-block">
+                                Project Link
+                            </a>
+                        )}
+                    </div>
+                    ))
+                ) : (
+            <p className="text-gray-500">No projects recorded.</p>
+            )}
+        </Section>
 
             <button className="mt-8 px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition shadow-lg">
                 Delete My Account
