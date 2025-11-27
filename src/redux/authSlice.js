@@ -1,72 +1,120 @@
-// src/redux/authSlice.js (Crucial Fixes for Profile Persistence)
+// src/redux/authSlice.js (FINALIZED PERSISTENCE LOGIC)
 import { createSlice } from '@reduxjs/toolkit';
 
-// Helper function remains the same
+//  PERSISTENCE HELPERS (Simplified and robust) 
+const loadState = (key, defaultValue) => {
+    try {
+        const serializedState = localStorage.getItem(key);
+        if (key === 'userAuth' && serializedState) {
+            const parsedState = JSON.parse(serializedState);
+            return {
+                ...parsedState,
+                isLoggedIn: false, // Force logout on refresh
+            };
+        }
+        return serializedState === null ? defaultValue : JSON.parse(serializedState);
+    } catch (e) {
+        console.warn(`Could not load state for key ${key}`, e);
+        return defaultValue;
+    }
+};
+
+const saveState = (key, state) => {
+    try {
+        localStorage.setItem(key, JSON.stringify(state));
+    } catch (e) {
+        console.warn(`Could not save state for key ${key}`, e);
+    }
+};
+// 
+
 const calculateCompletion = (profile) => {
     let completedSteps = 0;
-    
-    // Check 5 required steps (20% each)
+    // ... (rest of the completion logic remains the same)
     if (profile.name && profile.dob && profile.gender) completedSteps++;
     if (profile.mobile && profile.email && profile.currentAddress) completedSteps++;
-    if (profile.educationDetails && profile.educationDetails.length > 0) completedSteps++; // Check existence and length
+    if (profile.educationDetails && profile.educationDetails.length > 0) completedSteps++;
     if (profile.desiredCareer) completedSteps++;
-    if (profile.languages && profile.languages.length > 0) completedSteps++; // Check existence and length
-    
+    if (profile.languages && profile.languages.length > 0) completedSteps++;
     return Math.floor((completedSteps / 5) * 100);
 };
 
-// Initial State Definition
 const initialProfileState = {
     name: null, fatherName: null, dob: null, gender: null, district: null,
     mobile: null, email: null, currentAddress: null,
-    educationDetails: [], 
+    educationDetails: [],
     desiredCareer: null,
-    languages: [], 
+    languages: [],
     shortProfileDescription: null,
 };
 
+const initialAuthState = loadState('userAuth', {
+    isLoggedIn: false,
+    userName: null,
+    profile: initialProfileState,
+    profileCompletion: 0,
+});
+
 const authSlice = createSlice({
     name: 'auth',
+    // Load both the current session and the master user list
     initialState: {
-        isLoggedIn: false,
-        userName: null,
-        profile: initialProfileState,
-        profileCompletion: 0,
+        ...initialAuthState,
+        registeredUsers: loadState('registeredUsers', []), // Load ALL user accounts
     },
     reducers: {
-        loginSuccess: (state, action) => {
-            state.isLoggedIn = true;
-            
-            // 💥 FIX 1: Initialize Profile with returned data (or simulation)
-            const userData = action.payload.profile || { 
-                name: action.payload.name || "Gowthaman",
-                email: "test@example.com",
-                mobile: "9999900000",
-                // Simulate some initial data from signup:
-                dob: "2003-09-22",
-                gender: "Male",
-                currentAddress: "123 Main St, Karur",
-                desiredCareer: "Full Stack Developer",
-                languages: [{ language: "English", proficiency: "Proficient", read: true, write: true, speak: true, id: 1 }],
-                educationDetails: [{ degree: "B.E. CSE", college: "Karpagam", id: 1 }],
-                // Add any other user data saved during signup
+        registerUser: (state, action) => {
+            const newUser = {
+                ...initialProfileState,
+                ...action.payload,
+                id: Date.now(),
             };
-            
-            state.userName = userData.name.split(' ')[0]; // Use first name for header
-            state.profile = { ...initialProfileState, ...userData };
-            
-            // 💥 FIX 2: Calculate percentage immediately
+
+            state.registeredUsers.push(newUser);
+
+            // 🔥 CRITICAL FIX: Save the entire master list immediately after registration
+            saveState('registeredUsers', state.registeredUsers);
+        },
+        loginSuccess: (state, action) => {
+            const userProfile = action.payload.profile;
+
+            state.isLoggedIn = true;
+            state.userName = userProfile.name.split(' ')[0];
+            state.profile = { ...state.profile, ...userProfile };
             state.profileCompletion = calculateCompletion(state.profile);
+
+            // Save the current session details (userAuth)
+            saveState('userAuth', state);
         },
         updateProfile: (state, action) => {
-            state.profile = { ...state.profile, ...action.payload };
+            const updatedData = action.payload;
+            state.profile = { ...state.profile, ...updatedData };
             state.profileCompletion = calculateCompletion(state.profile);
+
+            // Update the profile data within the global registeredUsers array
+            state.registeredUsers = state.registeredUsers.map(user => {
+                if (user.email === state.profile.email) {
+                    return state.profile; // Replace old user object with the new profile data
+                }
+                return user;
+            });
+
+            saveState('userAuth', state);
+            // 🔥 CRITICAL FIX: Save the master list after any profile edit
+            saveState('registeredUsers', state.registeredUsers);
         },
-        // ... (logout reducer remains the same)
+        logout: (state) => {
+            state.isLoggedIn = false;
+            state.userName = null;
+            state.profile = initialProfileState;
+            state.profileCompletion = 0;
+            saveState('userAuth', state);
+        },
     },
 });
 
-export const { loginSuccess, updateProfile, logout } = authSlice.actions;
+export const { registerUser, loginSuccess, updateProfile, logout } = authSlice.actions;
 export const selectAuth = (state) => state.auth;
+export const selectRegisteredUsers = (state) => state.auth.registeredUsers;
 
 export default authSlice.reducer;
