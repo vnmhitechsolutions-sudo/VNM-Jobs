@@ -224,6 +224,25 @@ const CandidateEditProfile = () => {
         setProfileData({ ...profileData, experience: updated });
     };
 
+    // Add: Save / Close handlers for Experience items (were referenced in JSX)
+    const saveExperienceItem = (index) => {
+      const updated = [...(profileData.experience || [])];
+      if (!updated[index]) return;
+      updated[index] = { ...(updated[index] || {}), isSaved: true, isOpen: true };
+      setProfileData({ ...profileData, experience: updated });
+    };
+    
+    const closeExperience = (index) => {
+      const updated = [...(profileData.experience || [])];
+      const item = updated[index];
+      if (!item || !item.isSaved) {
+        updated.splice(index, 1);
+      } else {
+        updated[index] = { ...item, isOpen: false };
+      }
+      setProfileData({ ...profileData, experience: updated });
+    };
+
     // Month + Year dropdown values
     const months = [
         'January','February','March','April','May','June',

@@ -528,76 +528,7 @@ const CandidateProfile = () => {
                         </div>
                     </div>
                 </div>
-<<<<<<< HEAD
             )}
-=======
-            </div>
-            {/* --- END UNIFIED PROFILE CARD --- */}
-
-
-            {/* --- REST OF PROFILE SECTIONS (Simplified List View) --- */}
-            <Section title="Desired Career Profile" Icon={FiBriefcase}>
-                <p className="text-lg font-medium text-primary-dark mb-2">{desiredCareer || 'N/A'}</p>
-                <p className="text-gray-600">{shortProfileDescription || 'No description provided.'}</p>
-            </Section>
-
-            {/* ... (Education Details, Languages Known sections follow) ... */}
-            
-            <Section title="Education Details" Icon={FiCalendar}>
-                {educationDetails && educationDetails.length > 0 ? (
-                    educationDetails.map((edu, index) => (
-                        <div key={index} className="border-l-4 border-accent-teal pl-4 py-2 mb-4 bg-gray-50 rounded-lg">
-                            <p className="font-semibold text-primary-dark">{edu.degree}</p>
-                            <p className="text-sm text-gray-600">{edu.college}</p>
-                        </div>
-                    ))
-                ) : (
-                    <p className="text-gray-500">No education details recorded.</p>
-                )}
-            </Section>
-
-            <Section title="Languages Known" Icon={FiUser}>
-                {languages && languages.length > 0 ? (
-                    <p className="text-gray-600">Languages added: {languages.length}</p>
-                ) : (
-                    <p className="text-gray-500">No languages recorded.</p>
-                )}
-            </Section>
-
-
-            <Section title="Internships" Icon={FiBriefcase}>
-                {profile.internships && profile.internships.length > 0 ? (
-                    profile.internships.map((intern, index) => (
-                    <div key={index} className="border-l-4 border-accent-teal pl-4 py-2 mb-4 bg-gray-50 rounded-lg">
-                        <p className="font-semibold text-primary-dark">{intern.companyName}</p>
-                        <p className="text-sm text-gray-600">Type: {intern.type}</p>
-                        <p className="text-sm text-gray-600">Duration: {intern.duration}</p>
-                        <p className="text-sm text-gray-600">Project: {intern.projectName}</p>
-                        <p className="text-sm text-gray-600">Responsibilities: {intern.responsibilities}</p>
-                        <p className="text-sm text-gray-600">Stipend: {intern.stipend || "N/A"}</p>
-                        {intern.certificateUrl && (
-                            <a 
-                            href={intern.certificateUrl} 
-                            target="_blank" 
-                            className="text-blue-600 underline text-sm"
-                            >
-                            
-                            View Certificate
-                           </a>
-                        )}
-                        </div>
-                        ))
-                    ) : (
-                    <p className="text-gray-500">No internship details recorded.</p>
-                )}
-           
-            </Section>
-
-
-            <button className="mt-8 px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition shadow-lg">
-                Delete My Account
-            </button>
->>>>>>> d2e4c594291625f04661dc8c79cdf5709bccd2f1
         </CandidateDashboardLayout>
     );
 };
