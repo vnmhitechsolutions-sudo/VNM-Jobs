@@ -3,19 +3,18 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux'; // <-- CRITICAL: Import useDispatch
 import { logout } from '../../redux/authSlice'; // <-- CRITICAL: Import the logout action
 
-import { 
-    FiGrid, FiUser, FiEdit3, FiSearch, FiCheckSquare, 
-    FiBookmark, FiCalendar, FiLock, FiLogOut, FiLayers, 
-    FiKey, FiMessageSquare, FiSend 
+import {
+    FiGrid, FiUser, FiEdit3, FiSearch, FiCheckSquare,
+    FiBookmark, FiCalendar, FiLock, FiLogOut, FiLayers,
+    FiKey, FiMessageSquare, FiSend
 } from 'react-icons/fi';
 
 const NavItem = ({ to, Icon, label }) => (
-    <NavLink 
-        to={to} 
-        className={({ isActive }) => 
-            `flex items-center space-x-3 p-3 text-sm font-medium transition duration-300 ${
-                isActive 
-                ? 'bg-accent-teal text-primary-dark font-bold shadow-md' 
+    <NavLink
+        to={to}
+        className={({ isActive }) =>
+            `flex items-center space-x-3 p-3 text-sm font-medium transition duration-300 ${isActive
+                ? 'bg-accent-teal text-primary-dark font-bold shadow-md'
                 : 'text-gray-600 hover:bg-gray-100 hover:text-primary-dark'
             }`
         }
@@ -31,25 +30,25 @@ const DashboardSidebar = () => {
 
     const handleLogout = () => {
         // 1. Dispatch Redux action to clear global user state
-        dispatch(logout()); 
-        
+        dispatch(logout());
+
         // 2. Redirect to the public home page
         navigate('/');
     };
 
     return (
         <div className="bg-card-bg p-4 rounded-xl shadow-lg border border-gray-100 space-y-1 sticky top-24">
-            
-            {/* --- PRIMARY NAV ITEMS --- */}
-            <NavItem to="/candidate/dashboard" Icon={FiGrid} label="Dashboard" /> 
+
+            {/*  PRIMARY NAV ITEMS  */}
+            <NavItem to="/candidate/dashboard" Icon={FiGrid} label="Dashboard" />
             <NavItem to="/candidate/profile" Icon={FiUser} label="My Profile" />
             <NavItem to="/candidate/edit-profile" Icon={FiEdit3} label="Edit Profile" />
-            
+
             <div className="border-t border-gray-200 my-2 pt-2 space-y-1">
-                <NavItem to="/jobs" Icon={FiSearch} label="Job Search" /> 
+                <NavItem to="/jobs" Icon={FiSearch} label="Job Search" />
                 <NavItem to="/candidate/applied-jobs" Icon={FiCheckSquare} label="Applied Jobs" />
                 <NavItem to="/candidate/bookmarked-jobs" Icon={FiBookmark} label="Bookmarked Jobs" />
-                
+
                 <NavItem to="/candidate/job-fair-list" Icon={FiLayers} label="Job Fair List" />
                 <NavItem to="/candidate/job-fair-calendar" Icon={FiCalendar} label="Job Fair Calendar" />
                 <NavItem to="/candidate/applied-job-fair-list" Icon={FiSend} label="Applied Job Fair List" />
@@ -61,7 +60,7 @@ const DashboardSidebar = () => {
                 <NavItem to="/candidate/reset-password" Icon={FiKey} label="Reset Password" />
             </div>
 
-            {/* --- LOGOUT BUTTON (Triggers full Redux logout and redirect) --- */}
+            {/*  LOGOUT BUTTON (Triggers full Redux logout and redirect)  */}
             <button
                 onClick={handleLogout}
                 className="flex items-center space-x-3 p-3 text-sm font-medium transition duration-300 text-red-600 hover:bg-red-50 w-full text-left"

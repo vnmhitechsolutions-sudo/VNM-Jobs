@@ -7,10 +7,10 @@ import {
 } from 'react-icons/fi'; 
 import { motion } from 'framer-motion';
 
-// --- REDUX IMPORTS ---
+//  REDUX IMPORTS 
 import { useSelector, useDispatch } from 'react-redux';
 import { selectAuth, logout } from '../redux/authSlice'; 
-// ---------------------
+// --
 
 const NavItem = ({ to, children, Icon }) => (
     <NavLink 
@@ -26,7 +26,7 @@ const NavItem = ({ to, children, Icon }) => (
     </NavLink>
 );
 
-// --- Component for Authenticated Primary Nav Links ---
+//  Component for Authenticated Primary Nav Links 
 const DashboardPrimaryNav = () => (
     <div className="flex items-center space-x-2"> 
         <NavLink 
@@ -61,7 +61,7 @@ const DashboardPrimaryNav = () => (
         </NavLink>
     </div>
 );
-// -----------------------------------------------------
+// 
 
 const Header = () => {
     const navigate = useNavigate();
@@ -101,7 +101,7 @@ const Header = () => {
         };
     }, [isDropdownOpen]);
     
-    // --- LOGOUT HANDLER (Combined action for full logout) ---
+    //  LOGOUT HANDLER (Combined action for full logout) 
     const handleFullLogout = () => {
         setIsDropdownOpen(false); // Close dropdown immediately
         dispatch(logout());       // Log out (Redux state clear)

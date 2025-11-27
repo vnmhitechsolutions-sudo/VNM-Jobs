@@ -1,7 +1,7 @@
 // src/redux/authSlice.js (FINALIZED PERSISTENCE LOGIC)
 import { createSlice } from '@reduxjs/toolkit';
 
-// --- PERSISTENCE HELPERS (Simplified and robust) ---
+//  PERSISTENCE HELPERS (Simplified and robust) 
 const loadState = (key, defaultValue) => {
     try {
         const serializedState = localStorage.getItem(key);
@@ -26,7 +26,7 @@ const saveState = (key, state) => {
         console.warn(`Could not save state for key ${key}`, e);
     }
 };
-// ----------------------------
+// 
 
 const calculateCompletion = (profile) => {
     let completedSteps = 0;
